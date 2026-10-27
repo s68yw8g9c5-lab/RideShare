@@ -16,6 +16,7 @@ Scores (weighted by driver hours, August 2026 dollars):
   hit rate       for each day and time of day, does the model's #1 zone land in the
                  actual top 3? (picking at random would hit about 4% of the time)
   dollars lost   actual profit of the best zone minus actual profit of the model's pick
+  citywide miss  for all zones together, hour by hour: is this a good hour to drive at all?
 
 Usage:  python pipeline/09_model_test.py
 Output: reports/model_test.csv, reports/model_test.txt
@@ -81,6 +82,11 @@ def score(test, pred):
     t = test.assign(pred=pred).dropna(subset=["pred"])
     w = t["driver_hours"]
     miss = float(np.average((t["pred"] - t["profit_hr_busy_mid"]).abs(), weights=w))
+    wet = t["actually_rained"] == 1
+    miss_wet = float(np.average((t.loc[wet, "pred"] - t.loc[wet, "profit_hr_busy_mid"]).abs(), weights=w[wet]))
+    # "Is this a good hour to drive at all?": all of Manhattan + airports together, hour by hour
+    city = t.assign(wp=t["pred"] * w, wa=t["profit_hr_busy_mid"] * w).groupby("hour")[["wp", "wa", "driver_hours"]].sum()
+    city_miss = float(((city["wp"] - city["wa"]) / city["driver_hours"]).abs().mean())
     t["period"] = pd.cut(t["hour_of_day"], [-1, 5, 9, 15, 19, 23], labels=list(PERIODS))
     t["date"] = t["hour"].dt.date
     t["wp"], t["wa"] = t["pred"] * w, t["profit_hr_busy_mid"] * w
@@ -97,12 +103,13 @@ def score(test, pred):
         hits.append(pick[2] in top3)
         lost.append(g["actual"].max() - g.loc[pick, "actual"])
         picks += 1
-    return {"typical_miss": round(miss, 2), "hit_rate_top3": round(float(np.mean(hits)), 4),
+    return {"typical_miss": round(miss, 2), "miss_rainy_hours": round(miss_wet, 2), "citywide_hour_miss": round(city_miss, 2), "hit_rate_top3": round(float(np.mean(hits)), 4),
             "dollars_lost": round(float(np.mean(lost)), 2), "plans_tested": picks}
 
 
 def main():
     df = load()
+    df["actually_rained"] = df["is_rain"]
     train, test = df[df["year"] <= 2025], df[df["year"] == 2026]
     test_fc = with_forecast_weather(test)
     models = fit_models(train)
@@ -120,7 +127,8 @@ def main():
              "random picking would land in the top 3 about 4% of the time", ""]
     for r in fc.itertuples():
         lines.append(f"{r.model:14s} top pick in actual top 3: {r.hit_rate_top3:.0%}   "
-                     f"typical miss ${r.typical_miss:.2f}/hr   lost vs best zone ${r.dollars_lost:.2f}/hr")
+                     f"typical miss ${r.typical_miss:.2f}/hr (rainy hours ${r.miss_rainy_hours:.2f})   "
+                 f"citywide hour miss ${r.citywide_hour_miss:.2f}   lost vs best zone ${r.dollars_lost:.2f}/hr")
     (REPORTS / "model_test.txt").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
 

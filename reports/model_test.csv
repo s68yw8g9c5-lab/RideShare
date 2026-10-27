@@ -1,0 +1,9 @@
+model,weather,typical_miss,miss_rainy_hours,citywide_hour_miss,hit_rate_top3,dollars_lost,plans_tested
+History only,forecast the day before,2.74,3.71,2.39,0.7834,1.51,1214
+History only,actual weather,2.74,3.71,2.39,0.7834,1.51,1214
+Regression,forecast the day before,2.82,3.74,2.52,0.7792,1.56,1214
+Regression,actual weather,2.83,3.35,2.54,0.7801,1.54,1214
+Random forest,forecast the day before,2.79,3.93,2.45,0.7611,1.64,1214
+Random forest,actual weather,2.74,3.54,2.41,0.7636,1.61,1214
+XGBoost,forecast the day before,2.78,3.76,2.54,0.7834,1.39,1214
+XGBoost,actual weather,2.72,3.26,2.49,0.7817,1.44,1214

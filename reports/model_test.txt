@@ -1,0 +1,7 @@
+Accuracy test on Jan-Aug 2026 (models trained on 2024-2025 only), using the day-before forecast
+1,214 plans tested (each day x 5 times of day); random picking would land in the top 3 about 4% of the time
+
+History only   top pick in actual top 3: 78%   typical miss $2.74/hr (rainy hours $3.71)   citywide hour miss $2.39   lost vs best zone $1.51/hr
+XGBoost        top pick in actual top 3: 78%   typical miss $2.78/hr (rainy hours $3.76)   citywide hour miss $2.54   lost vs best zone $1.39/hr
+Regression     top pick in actual top 3: 78%   typical miss $2.82/hr (rainy hours $3.74)   citywide hour miss $2.52   lost vs best zone $1.56/hr
+Random forest  top pick in actual top 3: 76%   typical miss $2.79/hr (rainy hours $3.93)   citywide hour miss $2.45   lost vs best zone $1.64/hr
