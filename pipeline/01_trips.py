@@ -64,7 +64,7 @@ GROUP BY ALL
 def summarize(raw_file, out_file, zones):
     con = duckdb.connect()
     df = con.execute(SUMMARY_SQL, [str(raw_file), zones]).df()
-    df.to_parquet(out_file, index=False)
+    df.sort_values(["zone", "hour", "company"]).to_parquet(out_file, index=False, compression="zstd")
     return len(df)
 
 
