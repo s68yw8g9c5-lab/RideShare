@@ -17,6 +17,8 @@ under three sets of assumptions (best, mid, worst case) so no single guess drive
     plus about 2 miles from the lot to the terminal.
 Cost per mile is the IRS business rate for that year (gas, wear, insurance, depreciation).
 A gas-only view is also kept, for drivers who only count fuel.
+All profit columns are in August 2026 dollars (NYC-area inflation removed), so a 2024
+hour and a 2026 hour compare fairly; profit_hr_busy_mid_nominal keeps the original dollars.
 
 Usage:  python pipeline/04_profit.py
 Output: data/clean/model_table.parquet  (features + profit per hour, one row per zone per hour)
@@ -87,6 +89,9 @@ def main():
         add_profit(df, f"busy_{name}", df[f"empty_share_{name}"], wait, full_cost)
     add_profit(df, "busy_mid_gas_only", df["empty_share_mid"], SCENARIOS["mid"][1],
                df["gas_price"] / MPG)
+    df["profit_hr_busy_mid_nominal"] = df["profit_hr_busy_mid"]
+    profit_cols = [c for c in df.columns if c.startswith("profit_hr_") and not c.endswith("_nominal")]
+    df[profit_cols + ["earn_per_rider_hr"]] = df[profit_cols + ["earn_per_rider_hr"]].mul(df["cpi_factor"], axis=0)
     df.to_parquet(CLEAN / "model_table.parquet", index=False, compression="zstd")
 
     # sanity check: hour-weighted averages, so a busy hour counts more than a dead one

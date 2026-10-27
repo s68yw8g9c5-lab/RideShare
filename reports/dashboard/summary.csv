@@ -1,0 +1,14 @@
+metric,value
+manhattan_profit_hr,21.35
+airport_breakeven_min,83.0
+jfk_profit_hr,28.23
+lga_profit_hr,24.46
+rain_lift_pct,0.1601
+trips,266141594.0
+rain_effect,3.68
+rain_low,3.05
+rain_high,4.31
+rain_effect_fixed,1.36
+rain_low_fixed,1.01
+rain_high_fixed,1.72
+rain_effect_pct,0.177

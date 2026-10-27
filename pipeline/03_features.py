@@ -1,5 +1,6 @@
 """Join everything a model needs onto the trip summaries: weather (what happened and
-what was forecast the day before), calendar, holidays and the weekly gas price.
+what was forecast the day before), calendar, holidays, the weekly gas price,
+inflation (NYC-area consumer prices), rule changes and a time trend.
 
 Uber and Lyft are added together, since a driver can work for both.
 Each zone uses its nearest weather station: JFK and LaGuardia use their own airport
@@ -18,6 +19,16 @@ import requests
 CLEAN = Path("data/clean")
 GAS_URL = "https://www.eia.gov/dnav/pet/hist_xls/EMM_EPMR_PTE_Y35NY_DPGw.xls"  # NYC regular, weekly
 STATION_OF_ZONE = {132: "jfk", 138: "lga"}  # everything else: central_park
+CPI_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CUURA101SA0"  # CPI-U, NY-Newark-Jersey City
+CPI_BASE = "2026-08"  # all dollars are restated in August 2026 money
+# Rule changes that could shift pay or demand. Each becomes a 0/1 column, 1 from that date on.
+RULES = {
+    "pay_rate_2024_03": "2024-03-01",       # TLC yearly minimum-pay update, +3.49%
+    "congestion_pricing": "2025-01-05",     # $1.50 toll per Uber/Lyft trip below 60th St (riders pay)
+    "pay_rate_2025_03": "2025-03-01",       # TLC yearly minimum-pay update, +3.92%
+    "pay_rate_2025_08": "2025-08-01",       # TLC 5% minimum-pay raise voted June 2025 (reported start Aug 1)
+    "pay_rate_2026_03": "2026-03-01",       # TLC minimum-pay update, +3.36%
+}
 
 
 def gas_prices():
@@ -27,6 +38,19 @@ def gas_prices():
     gas = pd.read_excel(raw, sheet_name="Data 1", skiprows=2)
     gas.columns = ["week", "gas_price"]
     return gas.dropna()
+
+
+def cpi():
+    raw = Path("data/raw/cpi_ny.csv")
+    raw.write_bytes(requests.get(CPI_URL, timeout=60).content)
+    c = pd.read_csv(raw)
+    c.columns = ["month", "cpi"]
+    c["cpi"] = pd.to_numeric(c["cpi"], errors="coerce")
+    # a month BLS skipped (Oct 2025, government shutdown) is filled from its neighbors
+    c = c.set_index(pd.PeriodIndex(c["month"].str[:7], freq="M"))["cpi"]
+    c = c.reindex(pd.period_range(c.index.min(), c.index.max(), freq="M")).interpolate()
+    factor = c[pd.Period(CPI_BASE, "M")] / c
+    return factor.set_axis(factor.index.strftime("%Y-%m"))
 
 
 def main():
@@ -63,6 +87,14 @@ def main():
     df["year"] = df["hour"].dt.year
     us_ny = holidays.US(state="NY", years=range(2024, 2027))
     df["is_holiday"] = df["hour"].dt.date.map(lambda d: d in us_ny).astype(int)
+
+    # inflation: multiply any dollar amount by cpi_factor to put it in August 2026 money
+    df["cpi_factor"] = df["hour"].dt.strftime("%Y-%m").map(cpi())
+
+    # rule changes and a steady trend (months since January 2024)
+    for name, start in RULES.items():
+        df[name] = (df["hour"] >= start).astype(int)
+    df["months_since_start"] = (df["hour"] - pd.Timestamp("2024-01-01")).dt.days / 30.44
 
     # gas: the price from the most recent weekly survey on or before that hour
     gas = gas_prices()
