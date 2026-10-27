@@ -1,7 +1,10 @@
-# raw downloads are huge; the small summaries in data/clean are kept in git
+# raw downloads are huge; the small summaries in data/clean are kept in git.
+# The two big built tables at the end are rebuilt in under a minute by 03 and 04.
 data/raw/
 data/clean/weather_parts/
 data/taxi_zone_lookup.csv
 .venv/
 __pycache__/
 .ipynb_checkpoints/
+data/clean/zone_hour_features.parquet
+data/clean/model_table.parquet
