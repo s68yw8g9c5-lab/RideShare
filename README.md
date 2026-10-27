@@ -11,7 +11,8 @@ generalization test.
 - [x] Trips summarized to zone x hour, Jan 2024 to Aug 2026 (`pipeline/01_trips.py`)
 - [x] Weather, actual and day-ahead forecast (`pipeline/02_weather.py`)
 - [x] Weather, calendar, holidays and gas joined (`pipeline/03_features.py`)
-- [x] Profit per hour, best / mid / worst case (`pipeline/04_profit.py`)
+- [x] Profit per hour, best / mid / worst case, with empty time that moves with how busy each zone
+  and hour is (`pipeline/04_profit.py`)
 - [ ] Regression, random forest / XGBoost
 - [ ] Forecast backtest on 2026
 - [ ] Map dashboard and "plan tomorrow"
@@ -34,7 +35,7 @@ python pipeline/04_profit.py
 - `data/clean/weather_forecast_d1.parquet`: what the forecast said the day before, for the same hours.
 - `data/clean/model_table.parquet`: the table the models use. One row per zone per hour (Uber + Lyft
   combined) with weather, forecast, calendar, holiday, gas price and profit per hour under best, mid
-  and worst case assumptions. Use rows with `enough_trips == 1`. Too big for GitHub, so rebuild it
+  and worst case assumptions. Main target: `profit_hr_busy_mid`. Use rows with `enough_trips == 1`. Too big for GitHub, so rebuild it
   with steps 03 and 04 (under a minute).
 
 ## Sources
