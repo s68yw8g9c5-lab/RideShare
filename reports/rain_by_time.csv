@@ -1,7 +1,7 @@
 block,rain_effect,low,high,pct_of_dry
-Weekday 7-10am,5.32,3.83,6.82,0.2563
+Weekday 7-10am,5.32,3.82,6.81,0.256
 Weekday 10am-4pm,1.79,1.08,2.5,0.0862
-Weekday 4-8pm,6.55,4.99,8.11,0.3153
-Weekday 8pm-midnight,6.08,4.25,7.92,0.2929
-Weekday midnight-7am,1.73,0.96,2.49,0.0831
-"Weekend, any hour",2.26,1.45,3.07,0.1089
+Weekday 4-8pm,6.54,4.98,8.11,0.315
+Weekday 8pm-midnight,6.08,4.24,7.92,0.2927
+Weekday midnight-7am,1.71,0.93,2.49,0.0824
+"Weekend, any hour",2.25,1.44,3.05,0.1081

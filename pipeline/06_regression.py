@@ -34,7 +34,7 @@ BLOCKS = [  # (name, weekend?, first hour, last hour)
     ("Weekday midnight-7am", 0, 0, 6), ("Weekend, any hour", 1, 0, 23),
 ]
 TEMPS = ["below 32F", "32-50F", "70-85F", "above 85F"]  # compared with 50-70F
-RULES = {"congestion_pricing": "Congestion pricing (Jan 2025)",
+RULES = {"congestion_pricing_zone": "Congestion pricing, below 60th St (Jan 2025)",
          "pay_rate_2024_03": "TLC pay update (Mar 2024)", "pay_rate_2025_03": "TLC pay update (Mar 2025)",
          "pay_rate_2025_08": "TLC 5% pay raise (Aug 2025)"}
 # The March 2026 pay update falls after the 2024-2025 training years; the 2026 test uses it.
@@ -58,7 +58,7 @@ def prepare():
         inside = (df["is_weekend"] == weekend) & df["hour_of_day"].between(h0, h1)
         df[f"rain_b{i}"] = (inside & (df["is_rain"] == 1)).astype(int)
     df["fixed_hours"] = df["trip_hours"] / (1 - 0.6)
-    keep = ["profit_hr_busy_mid", "profit_hr_fixed_mid", "fixed_hours", "months_since_start", *RULES, "driver_hours", "is_rain", "is_snow", "windy", "is_holiday",
+    keep = ["light_rain", "heavy_rain", "profit_hr_busy_mid", "profit_hr_fixed_mid", "fixed_hours", "months_since_start", *RULES, "driver_hours", "is_rain", "is_snow", "windy", "is_holiday",
             "zone", "dow_hour", "month", "year", "day", "trip_hours", "empty_share_mid"]
     keep += [c for c in df.columns if c.startswith(("temp_", "rain_b"))]
     return df[keep]
@@ -82,6 +82,7 @@ def main():
     dry_avg = np.average(dry["profit_hr_busy_mid"], weights=dry["driver_hours"])
 
     main_model = fit(f"is_rain + is_snow + {CONTROLS}", train)
+    intensity = fit(f"light_rain + heavy_rain + is_snow + {CONTROLS}", train)
     blocks = " + ".join(f"rain_b{i}" for i in range(len(BLOCKS)))
     by_time = fit(f"{blocks} + is_snow + {CONTROLS}", train)
 
@@ -97,12 +98,16 @@ def main():
     for i, band in enumerate(TEMPS):
         b, lo, hi = row(main_model, f"temp_{i}")
         lines.append(f"{band + ' vs 50-70F':20s} {b:+.2f} $/hr  (95% range {lo:+.2f} to {hi:+.2f})")
+    for term, label in [("light_rain", "  light rain"), ("heavy_rain", "  heavy rain (0.1 in/hr+)")]:
+        b, lo, hi = row(intensity, term)
+        lines.append(f"{label:20s} {b:+.2f} $/hr  (95% range {lo:+.2f} to {hi:+.2f})"
+                     f"  = {b / dry_avg:+.1%} of a dry hour")
     b, lo, hi = row(main_model, "months_since_start")
     lines.append(f"{'Trend, per year':20s} {12 * b:+.2f} $/hr  (95% range {12 * lo:+.2f} to {12 * hi:+.2f})")
     lines += ["", "Steps at rule changes (on top of the trend):"]
     for term, label in RULES.items():
         b, lo, hi = row(main_model, term)
-        lines.append(f"  {label:28s} {b:+.2f} $/hr  (95% range {lo:+.2f} to {hi:+.2f})")
+        lines.append(f"  {label:44s} {b:+.2f} $/hr  (95% range {lo:+.2f} to {hi:+.2f})")
     fixed = fit(f"is_rain + is_snow + {CONTROLS}", train, y="profit_hr_fixed_mid", w="fixed_hours")
     rain, fixed_rain = row(main_model, "is_rain"), row(fixed, "is_rain")
     pd.DataFrame([(f"rain_{k}{s}", round(v, 2)) for s, vals in [("", rain), ("_fixed", fixed_rain)]

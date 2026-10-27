@@ -4,31 +4,33 @@ and month compared, plus a trend and rule-change steps; August 2026 dollars;
 95% ranges clustered by day
 Average dry-hour profit: $20.77
 
-Rain                 +3.68 $/hr  (95% range +3.05 to +4.31)  = +17.7% of a dry hour
-Snow                 +1.99 $/hr  (95% range +0.54 to +3.44)  = +9.6% of a dry hour
-Wind 20+ mph         +0.08 $/hr  (95% range -0.54 to +0.69)  = +0.4% of a dry hour
-below 32F vs 50-70F  +1.38 $/hr  (95% range +0.61 to +2.15)
+Rain                 +3.67 $/hr  (95% range +3.04 to +4.30)  = +17.7% of a dry hour
+Snow                 +1.95 $/hr  (95% range +0.50 to +3.40)  = +9.4% of a dry hour
+Wind 20+ mph         +0.06 $/hr  (95% range -0.55 to +0.68)  = +0.3% of a dry hour
+below 32F vs 50-70F  +1.35 $/hr  (95% range +0.56 to +2.13)
 32-50F vs 50-70F     +0.38 $/hr  (95% range -0.02 to +0.77)
 70-85F vs 50-70F     +0.30 $/hr  (95% range -0.01 to +0.61)
-above 85F vs 50-70F  +2.21 $/hr  (95% range +1.59 to +2.83)
-Trend, per year      -1.45 $/hr  (95% range -7.40 to +4.51)
+above 85F vs 50-70F  +2.22 $/hr  (95% range +1.59 to +2.84)
+  light rain         +2.73 $/hr  (95% range +2.18 to +3.27)  = +13.1% of a dry hour
+  heavy rain (0.1 in/hr+) +8.45 $/hr  (95% range +6.69 to +10.20)  = +40.7% of a dry hour
+Trend, per year      -1.99 $/hr  (95% range -8.07 to +4.10)
 
 Steps at rule changes (on top of the trend):
-  Congestion pricing (Jan 2025) -2.02 $/hr  (95% range -7.58 to +3.54)
-  TLC pay update (Mar 2024)    +4.44 $/hr  (95% range -3.50 to +12.37)
-  TLC pay update (Mar 2025)    +4.40 $/hr  (95% range -3.56 to +12.36)
-  TLC 5% pay raise (Aug 2025)  -1.26 $/hr  (95% range -1.84 to -0.68)
+  Congestion pricing, below 60th St (Jan 2025) -0.19 $/hr  (95% range -0.54 to +0.15)
+  TLC pay update (Mar 2024)                    +3.20 $/hr  (95% range -3.00 to +9.41)
+  TLC pay update (Mar 2025)                    +3.05 $/hr  (95% range -3.10 to +9.21)
+  TLC 5% pay raise (Aug 2025)                  -1.26 $/hr  (95% range -1.84 to -0.68)
 
 Check: with the same empty time in every hour (no busy-ness adjustment),
-rain adds +1.36 $/hr (95% range +1.01 to +1.72). So the true rain effect
+rain adds +1.36 $/hr (95% range +1.00 to +1.71). So the true rain effect
 most likely sits between the two estimates, depending on how much rain cuts drivers' waits.
 
 R-squared (with fixed effects): 0.40
 
 Rain effect by time of day:
-  Weekday 7-10am         +5.32 $/hr  (95% range +3.83 to +6.82)
+  Weekday 7-10am         +5.32 $/hr  (95% range +3.82 to +6.81)
   Weekday 10am-4pm       +1.79 $/hr  (95% range +1.08 to +2.50)
-  Weekday 4-8pm          +6.55 $/hr  (95% range +4.99 to +8.11)
-  Weekday 8pm-midnight   +6.08 $/hr  (95% range +4.25 to +7.92)
-  Weekday midnight-7am   +1.73 $/hr  (95% range +0.96 to +2.49)
-  Weekend, any hour      +2.26 $/hr  (95% range +1.45 to +3.07)
+  Weekday 4-8pm          +6.54 $/hr  (95% range +4.98 to +8.11)
+  Weekday 8pm-midnight   +6.08 $/hr  (95% range +4.24 to +7.92)
+  Weekday midnight-7am   +1.71 $/hr  (95% range +0.93 to +2.49)
+  Weekend, any hour      +2.25 $/hr  (95% range +1.44 to +3.05)

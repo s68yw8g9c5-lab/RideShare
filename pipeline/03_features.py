@@ -19,6 +19,13 @@ import requests
 CLEAN = Path("data/clean")
 GAS_URL = "https://www.eia.gov/dnav/pet/hist_xls/EMM_EPMR_PTE_Y35NY_DPGw.xls"  # NYC regular, weekly
 STATION_OF_ZONE = {132: "jfk", 138: "lga"}  # everything else: central_park
+# Zones south of 60th Street, where the congestion toll applies (zone's center below the line
+# from Columbus Circle to 60th St and the East River)
+CONGESTION_ZONES = [4, 12, 13, 45, 48, 50, 68, 79, 87, 88, 90, 100, 103, 104, 105, 107, 113,
+                    114, 125, 137, 144, 148, 158, 161, 162, 163, 164, 170, 186, 209, 211, 224,
+                    229, 230, 231, 232, 233, 234, 246, 249, 261]
+EVENT_VENUES = [194]  # Randalls Island: stadium and festival crowds, left out of the picks
+HEAVY_RAIN_IN = 0.1   # inches in an hour; NWS calls 0.10 in/hr or more moderate-to-heavy rain
 CPI_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CUURA101SA0"  # CPI-U, NY-Newark-Jersey City
 CPI_BASE = "2026-08"  # all dollars are restated in August 2026 money
 # Rule changes that could shift pay or demand. Each becomes a 0/1 column, 1 from that date on.
@@ -94,6 +101,11 @@ def main():
     # rule changes and a steady trend (months since January 2024)
     for name, start in RULES.items():
         df[name] = (df["hour"] >= start).astype(int)
+    df["in_congestion_zone"] = df["zone"].isin(CONGESTION_ZONES).astype(int)
+    df["congestion_pricing_zone"] = df["congestion_pricing"] * df["in_congestion_zone"]
+    df["event_venue"] = df["zone"].isin(EVENT_VENUES).astype(int)
+    df["heavy_rain"] = ((df["is_rain"] == 1) & (df["precip_in"] >= HEAVY_RAIN_IN)).astype(int)
+    df["light_rain"] = ((df["is_rain"] == 1) & (df["heavy_rain"] == 0)).astype(int)
     df["months_since_start"] = (df["hour"] - pd.Timestamp("2024-01-01")).dt.days / 30.44
 
     # gas: the price from the most recent weekly survey on or before that hour

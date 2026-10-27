@@ -1,8 +1,8 @@
 metric,value
-rain_effect,3.68
-rain_low,3.05
-rain_high,4.31
+rain_effect,3.67
+rain_low,3.04
+rain_high,4.3
 rain_effect_fixed,1.36
-rain_low_fixed,1.01
-rain_high_fixed,1.72
-rain_effect_pct,0.177
+rain_low_fixed,1.0
+rain_high_fixed,1.71
+rain_effect_pct,0.1766

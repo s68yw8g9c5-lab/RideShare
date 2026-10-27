@@ -1,0 +1,291 @@
+<title>Plan Tomorrow Concept</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a phone-width app screen centered on a soft backdrop; header, weather strip, scenario + time pickers, ranked zone list, best-hours chart, method notes */
+:root {
+  --backdrop: #f1f1f4; --screen: #ffffff; --ink: #111114; --ink-2: #5c5c66; --ink-3: #8b8b96;
+  --line: #ececf0; --chip: #f2f2f5; --chip-on: #111114; --chip-on-ink: #ffffff;
+  --money: #2f9e44; --good-bg: #59b259; --good-ink: #ffffff; --bad-bg: #d9475a;
+  --bar-a: #d6409f; --bar-b: #6c4fd8; --track: #ececf3; --rain: #3b82c4;
+  --font: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --backdrop: #0d0d10; --screen: #17171b; --ink: #f2f2f5; --ink-2: #b4b4bf; --ink-3: #85858f;
+  --line: #2a2a31; --chip: #24242b; --chip-on: #f2f2f5; --chip-on-ink: #111114;
+  --money: #5cc46c; --good-bg: #3f8f45; --good-ink: #ffffff; --bad-bg: #b8394b;
+  --bar-a: #e55bb0; --bar-b: #8a72ec; --track: #2a2a33; --rain: #6aa9e0; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --backdrop: #0d0d10; --screen: #17171b; --ink: #f2f2f5; --ink-2: #b4b4bf; --ink-3: #85858f;
+  --line: #2a2a31; --chip: #24242b; --chip-on: #f2f2f5; --chip-on-ink: #111114;
+  --money: #5cc46c; --good-bg: #3f8f45; --good-ink: #ffffff; --bad-bg: #b8394b;
+  --bar-a: #e55bb0; --bar-b: #8a72ec; --track: #2a2a33; --rain: #6aa9e0; color-scheme: dark }
+
+body { background: var(--backdrop); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.45; }
+.page { display: flex; flex-direction: column; align-items: center; gap: 14px; padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.concept { max-width: 420px; width: 100%; font-size: 12px; color: var(--ink-2); text-align: center; text-wrap: balance; }
+.concept b { color: var(--ink); font-weight: 700; }
+.screen { width: 100%; max-width: 420px; background: var(--screen); border-radius: 28px; border: 1px solid var(--line);
+  box-shadow: 0 10px 40px rgb(0 0 0 / .08); overflow: hidden; display: flex; flex-direction: column; }
+.top { padding: 22px 20px 10px; display: flex; flex-direction: column; gap: 2px; text-align: center; }
+.top h1 { margin: 0; font-size: 17px; font-weight: 800; }
+.top .sub { font-size: 13px; color: var(--ink-2); }
+.hero { padding: 6px 20px 16px; display: flex; flex-direction: column; gap: 6px; }
+.hero .big { font-size: 22px; font-weight: 800; line-height: 1.25; text-wrap: balance; }
+.hero .big .m { color: var(--money); }
+.hero .why { font-size: 13px; color: var(--ink-2); }
+section.blk { border-top: 8px solid var(--chip); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.h2 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.h2 h2 { margin: 0; font-size: 16px; font-weight: 800; }
+.h2 span { font-size: 12px; color: var(--ink-3); }
+.wx { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.wx .h { flex: 0 0 auto; width: 52px; border-radius: 12px; background: var(--chip); padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 12px; }
+.wx .h b { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.wx .h .t { color: var(--ink-2); }
+.wx .h.wet { background: color-mix(in srgb, var(--rain) 16%, var(--chip)); }
+.wx .h svg { width: 16px; height: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { appearance: none; border: 0; background: var(--chip); color: var(--ink); font: 600 13px var(--font); padding: 8px 12px; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.chip[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
+.chip:focus-visible { outline: 2px solid var(--bar-b); outline-offset: 2px; }
+ol.rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+ol.rank li { display: grid; grid-template-columns: 26px minmax(0, 1fr) 84px 64px; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+ol.rank li:last-child { border-bottom: 0; }
+.n { font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.z { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.z small { display: block; font-weight: 500; font-size: 11px; color: var(--ink-3); }
+.bar { height: 8px; border-radius: 99px; background: var(--track); overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--bar-a), var(--bar-b)); }
+.v { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.v small { display: block; font-size: 11px; color: var(--ink-3); font-weight: 500; }
+.callout { grid-column: 1 / -1; border-radius: 10px; padding: 8px 12px; font-size: 13px; font-weight: 600; color: var(--good-ink); background: var(--good-bg); }
+.callout.down { background: var(--bad-bg); }
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { fill: var(--ink-3); font: 500 10px var(--font); }
+.tip { position: absolute; pointer-events: none; background: var(--screen); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 6px 20px rgb(0 0 0 / .12); padding: 6px 10px; font-size: 12px; white-space: nowrap; }
+.tip b { display: block; }
+.notes { font-size: 12px; color: var(--ink-2); display: flex; flex-direction: column; gap: 8px; }
+.notes p { margin: 0; }
+.notes b { color: var(--ink); }
+.foot { max-width: 420px; width: 100%; font-size: 11px; color: var(--ink-3); text-align: center; }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .35s ease-out; } }
+</style>
+
+<div class="page">
+  <p class="concept"><b>A feature concept for Gridwise drivers</b>, built from public NYC data by an independent student project. Not a Gridwise product.</p>
+
+  <main class="screen" id="app">
+    <header class="top">
+      <h1>Plan Tomorrow</h1>
+      <span class="sub" id="date">Manhattan and airports</span>
+    </header>
+    <div class="hero">
+      <div class="big" id="headline">Loading your plan</div>
+      <div class="why" id="headline-why"></div>
+    </div>
+
+    <section class="blk" aria-labelledby="wx-h">
+      <div class="h2"><h2 id="wx-h">Tomorrow's weather</h2><span>National Weather Service</span></div>
+      <div class="wx" id="wx"></div>
+      <div class="chips" role="group" aria-label="Weather to plan for">
+        <button class="chip" id="sc-fc" aria-pressed="true">Use the forecast</button>
+        <button class="chip" id="sc-rain" aria-pressed="false">What if it rains?</button>
+      </div>
+    </section>
+
+    <section class="blk" aria-labelledby="rank-h">
+      <div class="h2"><h2 id="rank-h">Where to drive</h2><span>profit per hour</span></div>
+      <div class="chips" role="group" aria-label="Time of day" id="blocks"></div>
+      <ol class="rank" id="rank"></ol>
+    </section>
+
+    <section class="blk" aria-labelledby="hours-h">
+      <div class="h2"><h2 id="hours-h">When to drive</h2><span id="hours-sub">best zone each hour</span></div>
+      <div class="chart" id="hours"></div>
+    </section>
+
+    <section class="blk notes" aria-labelledby="how-h">
+      <div class="h2"><h2 id="how-h">How this is worked out</h2></div>
+      <p><b>Profit, not pay.</b> Driver pay plus tips, minus 72.5 cents a mile for gas, wear and insurance, divided by every hour you work, including time between rides. Airport figures assume a one-hour wait in the taxi lot.</p>
+      <p><b>From history plus tomorrow's weather.</b> Each zone's usual earnings for this day and hour over the last 12 months, moved up or down by the forecast. Rain adds the most on weekday rush hours and evenings.</p>
+      <p id="accuracy"><b>Accuracy.</b> This is a preview. A test against 2026 results is running, and its hit rate will be shown here.</p>
+      <p><b>Data.</b> NYC TLC Uber and Lyft trip records (Jan 2024 to Aug 2026), NWS forecast for Central Park, August 2026 dollars. Randalls Island is left out because its busy days are stadium and festival events.</p>
+    </section>
+  </main>
+  <p class="foot" id="made"></p>
+</div>
+
+<script id="plan-data" type="application/json">{"date": "2026-10-27", "weekday": "Tuesday", "holiday": false, "made_at": "2026-10-27T01:05-04:00", "weather_source": "National Weather Service, Central Park forecast", "dollars": "August 2026 dollars, after car costs (IRS mileage rate) and estimated empty time", "airport_wait_min": 60, "hours": [{"hour": 0, "temp_f": 59, "rain_chance": 1, "precip_in": 0.0, "condition": "Dry"}, {"hour": 1, "temp_f": 58, "rain_chance": 1, "precip_in": 0.0, "condition": "Dry"}, {"hour": 2, "temp_f": 57, "rain_chance": 2, "precip_in": 0.0, "condition": "Dry"}, {"hour": 3, "temp_f": 55, "rain_chance": 2, "precip_in": 0.0, "condition": "Dry"}, {"hour": 4, "temp_f": 54, "rain_chance": 2, "precip_in": 0.0, "condition": "Dry"}, {"hour": 5, "temp_f": 53, "rain_chance": 2, "precip_in": 0.0, "condition": "Dry"}, {"hour": 6, "temp_f": 52, "rain_chance": 2, "precip_in": 0.0, "condition": "Dry"}, {"hour": 7, "temp_f": 51, "rain_chance": 2, "precip_in": 0.0, "condition": "Dry"}, {"hour": 8, "temp_f": 51, "rain_chance": 3, "precip_in": 0.0, "condition": "Dry"}, {"hour": 9, "temp_f": 53, "rain_chance": 3, "precip_in": 0.0, "condition": "Dry"}, {"hour": 10, "temp_f": 54, "rain_chance": 3, "precip_in": 0.0, "condition": "Dry"}, {"hour": 11, "temp_f": 56, "rain_chance": 2, "precip_in": 0.0, "condition": "Dry"}, {"hour": 12, "temp_f": 58, "rain_chance": 2, "precip_in": 0.0, "condition": "Dry"}, {"hour": 13, "temp_f": 59, "rain_chance": 2, "precip_in": 0.0, "condition": "Dry"}, {"hour": 14, "temp_f": 60, "rain_chance": 1, "precip_in": 0.0, "condition": "Dry"}, {"hour": 15, "temp_f": 60, "rain_chance": 1, "precip_in": 0.0, "condition": "Dry"}, {"hour": 16, "temp_f": 60, "rain_chance": 1, "precip_in": 0.0, "condition": "Dry"}, {"hour": 17, "temp_f": 59, "rain_chance": 1, "precip_in": 0.0, "condition": "Dry"}, {"hour": 18, "temp_f": 58, "rain_chance": 1, "precip_in": 0.0, "condition": "Dry"}, {"hour": 19, "temp_f": 56, "rain_chance": 1, "precip_in": 0.0, "condition": "Dry"}, {"hour": 20, "temp_f": 54, "rain_chance": 0, "precip_in": 0.0, "condition": "Dry"}, {"hour": 21, "temp_f": 53, "rain_chance": 0, "precip_in": 0.0, "condition": "Dry"}, {"hour": 22, "temp_f": 52, "rain_chance": 0, "precip_in": 0.0, "condition": "Dry"}, {"hour": 23, "temp_f": 51, "rain_chance": 0, "precip_in": 0.0, "condition": "Dry"}], "zones": [{"zone_id": 4, "zone": "Alphabet City", "area": "Manhattan", "pickable": true, "forecast": [16.95, 17.03, 18.1, 17.34, 20.0, 19.42, 20.1, 22.11, 26.7, 20.26, 14.58, 13.44, 14.05, 14.69, 16.28, 16.51, 15.78, 16.57, 17.5, 15.66, 15.64, 17.05, 17.64, 16.83], "if_rain": [17.65, 17.72, 18.79, 18.03, 20.7, 20.11, 20.8, 24.06, 28.64, 22.21, 15.17, 14.03, 14.64, 15.28, 16.87, 17.1, 19.59, 20.38, 21.31, 19.47, 18.21, 19.62, 20.21, 19.4]}, {"zone_id": 12, "zone": "Battery Park", "area": "Manhattan", "pickable": true, "forecast": [null, null, null, null, null, null, null, null, null, null, null, 14.28, 16.35, 15.32, 16.6, 18.16, 19.01, 22.59, 23.3, 19.84, 13.27, 28.38, 35.14, null], "if_rain": [null, null, null, null, null, null, null, null, null, null, null, 14.87, 16.94, 15.91, 17.19, 18.75, 22.81, 26.4, 27.11, 23.65, 15.84, 30.95, 37.71, null]}, {"zone_id": 13, "zone": "Battery Park City", "area": "Manhattan", "pickable": true, "forecast": [22.03, 21.12, 21.99, 21.44, 21.99, 22.03, 19.38, 18.42, 17.86, 15.83, 16.02, 16.55, 17.21, 17.57, 17.87, 18.79, 21.1, 30.46, 30.27, 22.8, 24.05, 27.39, 24.8, 21.96], "if_rain": [22.73, 21.81, 22.69, 22.14, 22.68, 22.73, 20.08, 20.37, 19.81, 17.78, 16.61, 17.14, 17.8, 18.16, 18.46, 19.38, 24.91, 34.27, 34.08, 26.61, 26.61, 29.95, 27.37, 24.53]}, {"zone_id": 24, "zone": "Bloomingdale", "area": "Manhattan", "pickable": true, "forecast": [18.51, 18.64, 18.95, 20.9, 22.64, 21.11, 19.33, 18.89, 19.5, 14.98, 14.4, 14.44, 14.82, 15.03, 16.92, 17.89, 17.65, 19.05, 18.92, 17.92, 17.79, 19.47, 19.86, 18.53], "if_rain": [19.21, 19.34, 19.64, 21.59, 23.33, 21.8, 20.02, 20.84, 21.44, 16.93, 14.99, 15.03, 15.41, 15.62, 17.51, 18.48, 21.46, 22.86, 22.73, 21.72, 20.36, 22.04, 22.43, 21.1]}, {"zone_id": 41, "zone": "Central Harlem", "area": "Manhattan", "pickable": true, "forecast": [18.44, 17.41, 19.0, 19.31, 24.31, 23.46, 19.6, 19.67, 18.22, 14.81, 13.58, 13.91, 14.6, 15.94, 16.68, 17.84, 18.07, 19.19, 18.28, 17.11, 17.24, 18.03, 18.84, 18.18], "if_rain": [19.13, 18.1, 19.69, 20.0, 25.0, 24.15, 20.3, 21.62, 20.17, 16.76, 14.17, 14.5, 15.19, 16.53, 17.27, 18.43, 21.88, 23.0, 22.09, 20.92, 19.81, 20.59, 21.41, 20.75]}, {"zone_id": 42, "zone": "Central Harlem North", "area": "Manhattan", "pickable": true, "forecast": [17.88, 17.64, 18.03, 19.1, 23.74, 21.1, 19.23, 20.47, 18.58, 14.51, 13.65, 13.44, 14.45, 15.51, 16.39, 17.25, 17.39, 18.23, 17.29, 16.51, 16.88, 17.64, 18.5, 17.78], "if_rain": [18.57, 18.34, 18.73, 19.79, 24.44, 21.79, 19.92, 22.41, 20.53, 16.46, 14.24, 14.03, 15.04, 16.1, 16.98, 17.84, 21.2, 22.04, 21.1, 20.32, 19.45, 20.21, 21.07, 20.35]}, {"zone_id": 43, "zone": "Central Park", "area": "Manhattan", "pickable": true, "forecast": [20.27, 20.09, 18.59, 24.17, 19.49, 22.04, 19.66, 23.15, 24.0, 19.83, 17.81, 18.29, 19.69, 20.04, 20.35, 21.54, 21.04, 21.93, 21.65, 19.28, 22.28, 26.02, 26.83, 20.73], "if_rain": [20.97, 20.78, 19.29, 24.86, 20.18, 22.74, 20.36, 25.1, 25.95, 21.78, 18.4, 18.88, 20.28, 20.63, 20.94, 22.13, 24.85, 25.74, 25.46, 23.09, 24.85, 28.59, 29.4, 23.3]}, {"zone_id": 45, "zone": "Chinatown", "area": "Manhattan", "pickable": true, "forecast": [17.13, 17.35, 18.98, 18.52, 19.77, 18.54, 19.11, 20.21, 22.32, 15.69, 14.37, 15.66, 16.43, 16.73, 17.12, 18.05, 19.08, 19.54, 19.49, 17.17, 17.23, 19.56, 20.08, 17.25], "if_rain": [17.82, 18.05, 19.67, 19.22, 20.47, 19.23, 19.81, 22.16, 24.27, 17.64, 14.96, 16.25, 17.02, 17.32, 17.71, 18.64, 22.88, 23.34, 23.3, 20.98, 19.79, 22.12, 22.65, 19.82]}, {"zone_id": 48, "zone": "Clinton East", "area": "Manhattan", "pickable": true, "forecast": [18.47, 17.64, 17.96, 16.85, 18.98, 18.0, 16.78, 17.62, 21.58, 19.15, 17.35, 18.0, 18.11, 17.92, 18.53, 19.16, 19.27, 22.29, 23.28, 19.32, 21.3, 30.75, 29.46, 20.38], "if_rain": [19.16, 18.34, 18.65, 17.54, 19.67, 18.69, 17.47, 19.57, 23.53, 21.1, 17.94, 18.59, 18.7, 18.51, 19.12, 19.75, 23.08, 26.1, 27.09, 23.13, 23.87, 33.32, 32.03, 22.95]}, {"zone_id": 50, "zone": "Clinton West", "area": "Manhattan", "pickable": true, "forecast": [18.26, 17.87, 20.13, 19.13, 19.9, 19.13, 17.82, 19.0, 23.03, 20.62, 17.26, 16.72, 17.06, 17.61, 18.45, 19.25, 19.17, 20.39, 20.53, 18.38, 18.79, 23.47, 23.79, 18.81], "if_rain": [18.95, 18.56, 20.82, 19.82, 20.6, 19.82, 18.51, 20.95, 24.98, 22.57, 17.85, 17.31, 17.65, 18.2, 19.04, 19.84, 22.98, 24.2, 24.34, 22.19, 21.36, 26.04, 26.36, 21.38]}, {"zone_id": 68, "zone": "East Chelsea", "area": "Manhattan", "pickable": true, "forecast": [22.33, 19.85, 20.27, 20.12, 20.19, 18.17, 19.45, 18.21, 19.73, 17.63, 16.9, 17.57, 17.82, 18.37, 18.55, 19.8, 20.51, 24.87, 25.44, 21.73, 23.99, 33.93, 34.76, 26.57], "if_rain": [23.02, 20.54, 20.96, 20.81, 20.89, 18.87, 20.15, 20.16, 21.68, 19.57, 17.49, 18.16, 18.41, 18.96, 19.14, 20.39, 24.32, 28.68, 29.25, 25.54, 26.56, 36.5, 37.33, 29.14]}, {"zone_id": 74, "zone": "East Harlem North", "area": "Manhattan", "pickable": true, "forecast": [17.32, 16.06, 17.06, 19.01, 23.29, 20.71, 19.17, 19.28, 18.57, 15.4, 13.71, 13.89, 15.06, 15.63, 17.01, 17.77, 17.67, 17.97, 17.08, 16.25, 17.09, 17.85, 18.77, 17.57], "if_rain": [18.02, 16.75, 17.75, 19.7, 23.98, 21.4, 19.86, 21.22, 20.52, 17.34, 14.3, 14.48, 15.65, 16.22, 17.6, 18.36, 21.48, 21.78, 20.89, 20.06, 19.66, 20.42, 21.34, 20.14]}, {"zone_id": 75, "zone": "East Harlem South", "area": "Manhattan", "pickable": true, "forecast": [17.69, 17.11, 17.88, 19.66, 23.78, 22.2, 19.16, 19.6, 20.27, 16.53, 14.22, 15.16, 16.28, 16.41, 17.49, 18.86, 18.78, 19.54, 18.81, 17.25, 17.53, 18.2, 17.79, 17.09], "if_rain": [18.38, 17.8, 18.58, 20.35, 24.47, 22.89, 19.85, 21.55, 22.22, 18.48, 14.81, 15.75, 16.87, 17.0, 18.08, 19.45, 22.59, 23.35, 22.61, 21.05, 20.1, 20.77, 20.35, 19.66]}, {"zone_id": 79, "zone": "East Village", "area": "Manhattan", "pickable": true, "forecast": [17.83, 17.21, 18.31, 19.47, 21.84, 20.07, 20.78, 23.5, 28.67, 22.01, 16.23, 15.88, 15.7, 16.3, 16.64, 17.3, 16.88, 17.93, 18.21, 16.86, 16.91, 20.32, 22.3, 19.24], "if_rain": [18.52, 17.9, 19.0, 20.16, 22.54, 20.77, 21.47, 25.45, 30.62, 23.96, 16.82, 16.47, 16.29, 16.89, 17.23, 17.89, 20.68, 21.74, 22.02, 20.67, 19.48, 22.89, 24.87, 21.81]}, {"zone_id": 87, "zone": "Financial District North", "area": "Manhattan", "pickable": true, "forecast": [20.55, 19.79, 20.03, 16.3, 15.61, 18.51, 20.14, 19.57, 20.58, 16.92, 16.37, 17.4, 18.2, 17.99, 18.08, 18.43, 19.03, 24.46, 24.63, 20.03, 20.91, 24.43, 23.87, 20.35], "if_rain": [21.24, 20.49, 20.73, 17.0, 16.31, 19.2, 20.83, 21.51, 22.53, 18.87, 16.96, 17.99, 18.79, 18.58, 18.67, 19.02, 22.84, 28.27, 28.44, 23.84, 23.48, 27.0, 26.44, 22.91]}, {"zone_id": 88, "zone": "Financial District South", "area": "Manhattan", "pickable": true, "forecast": [20.15, 18.77, 19.54, 16.6, 17.02, 18.3, 18.71, 19.12, 18.9, 15.8, 15.76, 16.65, 17.31, 17.64, 17.49, 18.61, 19.78, 25.29, 25.72, 21.33, 23.29, 26.28, 26.39, 22.02], "if_rain": [20.85, 19.46, 20.23, 17.29, 17.71, 18.99, 19.4, 21.07, 20.85, 17.74, 16.35, 17.24, 17.9, 18.23, 18.08, 19.2, 23.59, 29.1, 29.53, 25.14, 25.86, 28.85, 28.96, 24.59]}, {"zone_id": 90, "zone": "Flatiron", "area": "Manhattan", "pickable": true, "forecast": [20.88, 18.44, 18.6, 19.26, 21.52, 20.87, 20.2, 20.3, 22.67, 18.55, 16.87, 17.13, 17.27, 17.26, 17.69, 17.94, 18.4, 21.39, 22.13, 19.56, 21.27, 30.68, 31.04, 23.89], "if_rain": [21.58, 19.14, 19.3, 19.95, 22.21, 21.57, 20.89, 22.25, 24.62, 20.5, 17.46, 17.72, 17.86, 17.85, 18.28, 18.53, 22.21, 25.2, 25.94, 23.37, 23.83, 33.25, 33.6, 26.46]}, {"zone_id": 100, "zone": "Garment District", "area": "Manhattan", "pickable": true, "forecast": [19.01, 17.28, 16.86, 15.57, 16.5, 15.23, 15.01, 16.88, 21.72, 19.1, 18.71, 20.05, 20.48, 20.66, 20.58, 21.07, 21.87, 26.65, 27.89, 22.99, 24.62, 34.69, 33.67, 24.21], "if_rain": [19.7, 17.97, 17.55, 16.26, 17.19, 15.93, 15.71, 18.83, 23.67, 21.05, 19.3, 20.64, 21.07, 21.25, 21.17, 21.66, 25.68, 30.46, 31.7, 26.8, 27.19, 37.26, 36.23, 26.78]}, {"zone_id": 107, "zone": "Gramercy", "area": "Manhattan", "pickable": true, "forecast": [18.59, 17.08, 18.13, 17.44, 20.38, 20.95, 20.05, 20.75, 24.05, 19.08, 16.59, 16.46, 16.76, 17.21, 17.47, 17.99, 18.02, 19.72, 20.65, 18.26, 18.51, 25.12, 25.91, 20.53], "if_rain": [19.28, 17.77, 18.82, 18.13, 21.07, 21.64, 20.74, 22.7, 26.0, 21.03, 17.18, 17.05, 17.35, 17.8, 18.06, 18.58, 21.83, 23.53, 24.45, 22.07, 21.08, 27.69, 28.48, 23.1]}, {"zone_id": 113, "zone": "Greenwich Village North", "area": "Manhattan", "pickable": true, "forecast": [19.26, 18.33, 18.66, 18.2, 20.85, 21.23, 21.62, 21.6, 24.09, 18.58, 16.65, 16.78, 16.66, 17.0, 17.19, 18.07, 17.57, 19.6, 20.25, 18.66, 19.86, 26.82, 27.89, 22.14], "if_rain": [19.95, 19.02, 19.35, 18.9, 21.54, 21.92, 22.31, 23.55, 26.04, 20.53, 17.24, 17.37, 17.25, 17.59, 17.78, 18.66, 21.38, 23.4, 24.06, 22.46, 22.43, 29.39, 30.46, 24.71]}, {"zone_id": 114, "zone": "Greenwich Village South", "area": "Manhattan", "pickable": true, "forecast": [19.78, 18.27, 17.79, 18.86, 21.88, 22.02, 21.34, 21.71, 24.68, 18.64, 16.24, 16.27, 16.47, 16.94, 17.15, 18.3, 18.34, 19.51, 20.01, 18.52, 20.17, 26.27, 28.16, 22.56], "if_rain": [20.47, 18.96, 18.48, 19.56, 22.57, 22.71, 22.03, 23.65, 26.63, 20.59, 16.83, 16.86, 17.06, 17.53, 17.74, 18.89, 22.15, 23.32, 23.82, 22.33, 22.74, 28.84, 30.73, 25.13]}, {"zone_id": 116, "zone": "Hamilton Heights", "area": "Manhattan", "pickable": true, "forecast": [18.1, 17.82, 18.98, 19.9, 23.42, 20.46, 18.04, 20.27, 18.97, 14.5, 13.28, 13.29, 14.13, 15.09, 16.36, 17.52, 17.64, 19.43, 18.38, 17.32, 17.13, 17.69, 18.69, 17.65], "if_rain": [18.8, 18.51, 19.67, 20.59, 24.12, 21.15, 18.73, 22.21, 20.92, 16.45, 13.87, 13.88, 14.72, 15.68, 16.95, 18.11, 21.45, 23.24, 22.19, 21.13, 19.7, 20.26, 21.26, 20.22]}, {"zone_id": 120, "zone": "Highbridge Park", "area": "Manhattan", "pickable": true, "forecast": [18.7, null, null, null, null, null, null, 19.82, 15.24, 11.7, 10.31, 10.44, 15.22, 12.85, 14.73, 17.19, 17.17, 17.1, 19.43, 17.68, 12.11, 15.27, 16.35, 13.05], "if_rain": [19.4, null, null, null, null, null, null, 21.77, 17.19, 13.65, 10.9, 11.03, 15.81, 13.44, 15.32, 17.78, 20.98, 20.91, 23.23, 21.49, 14.68, 17.84, 18.92, 15.62]}, {"zone_id": 125, "zone": "Hudson Sq", "area": "Manhattan", "pickable": true, "forecast": [19.46, 19.26, 19.58, 17.87, 19.28, 20.84, 21.28, 21.9, 22.93, 18.56, 17.28, 17.52, 17.94, 17.91, 18.27, 19.92, 21.54, 25.53, 25.31, 21.13, 20.99, 26.16, 25.95, 21.69], "if_rain": [20.15, 19.96, 20.28, 18.57, 19.97, 21.53, 21.97, 23.85, 24.88, 20.51, 17.87, 18.11, 18.53, 18.5, 18.86, 20.51, 25.35, 29.34, 29.12, 24.94, 23.56, 28.73, 28.52, 24.26]}, {"zone_id": 127, "zone": "Inwood", "area": "Manhattan", "pickable": true, "forecast": [18.34, 17.85, 18.89, 21.11, 22.89, 16.47, 16.92, 17.14, 16.07, 13.49, 12.64, 13.69, 13.69, 14.61, 16.67, 18.0, 17.88, 18.77, 17.92, 16.66, 16.67, 17.58, 18.25, 18.92], "if_rain": [19.03, 18.54, 19.58, 21.81, 23.58, 17.16, 17.62, 19.08, 18.01, 15.44, 13.23, 14.28, 14.28, 15.2, 17.26, 18.59, 21.69, 22.57, 21.73, 20.47, 19.24, 20.15, 20.82, 21.49]}, {"zone_id": 128, "zone": "Inwood Hill Park", "area": "Manhattan", "pickable": true, "forecast": [18.76, 17.47, 17.92, 20.2, null, 16.48, 14.28, 15.79, 16.68, 14.89, 15.08, 14.02, 15.31, 15.91, 15.96, 17.58, 18.15, 18.77, 18.55, 17.04, 16.81, 17.79, 17.8, 18.24], "if_rain": [19.45, 18.16, 18.61, 20.9, null, 17.17, 14.97, 17.74, 18.63, 16.84, 15.67, 14.61, 15.9, 16.5, 16.55, 18.17, 21.96, 22.58, 22.36, 20.85, 19.38, 20.36, 20.37, 20.8]}, {"zone_id": 132, "zone": "JFK Airport", "area": "Airport", "pickable": true, "forecast": [25.68, 23.4, 21.38, 18.76, 18.78, 22.96, 26.22, 28.18, 27.32, 26.98, 26.6, 26.81, 26.73, 27.29, 28.83, 29.85, 29.55, 28.54, 27.14, 27.15, 27.0, 26.07, 25.75, 25.43], "if_rain": [26.37, 24.09, 22.07, 19.45, 19.47, 23.65, 26.92, 30.12, 29.27, 28.93, 27.19, 27.4, 27.32, 27.88, 29.42, 30.44, 33.36, 32.35, 30.95, 30.96, 29.57, 28.64, 28.32, 28.0]}, {"zone_id": 137, "zone": "Kips Bay", "area": "Manhattan", "pickable": true, "forecast": [17.03, 16.52, 18.24, 18.49, 20.43, 18.74, 16.88, 17.21, 20.62, 16.71, 14.38, 14.7, 15.63, 15.54, 16.17, 18.29, 18.46, 20.53, 21.13, 17.76, 17.89, 21.54, 21.62, 17.34], "if_rain": [17.73, 17.21, 18.93, 19.18, 21.12, 19.43, 17.57, 19.16, 22.57, 18.66, 14.97, 15.29, 16.22, 16.13, 16.76, 18.88, 22.27, 24.34, 24.94, 21.57, 20.46, 24.11, 24.19, 19.9]}, {"zone_id": 138, "zone": "LaGuardia Airport", "area": "Airport", "pickable": true, "forecast": [22.68, 22.31, 22.21, 18.75, 14.98, 15.98, 19.03, 25.53, 26.05, 25.79, 25.55, 24.91, 24.43, 24.58, 25.92, 26.04, 25.57, 24.57, 23.59, 23.3, 23.15, 23.44, 22.78, 22.05], "if_rain": [23.37, 23.0, 22.91, 19.45, 15.67, 16.67, 19.72, 27.48, 28.0, 27.74, 26.14, 25.5, 25.02, 25.17, 26.51, 26.63, 29.38, 28.38, 27.4, 27.11, 25.72, 26.0, 25.35, 24.62]}, {"zone_id": 140, "zone": "Lenox Hill East", "area": "Manhattan", "pickable": true, "forecast": [18.25, 16.55, 18.92, 18.76, 18.69, 18.86, 16.84, 17.92, 21.33, 19.08, 17.67, 19.22, 20.29, 19.83, 19.61, 20.69, 20.14, 21.52, 21.33, 18.35, 18.43, 19.74, 18.97, 17.4], "if_rain": [18.94, 17.25, 19.61, 19.45, 19.39, 19.56, 17.53, 19.87, 23.28, 21.03, 18.26, 19.81, 20.88, 20.42, 20.2, 21.28, 23.94, 25.32, 25.14, 22.16, 21.0, 22.31, 21.54, 19.97]}, {"zone_id": 141, "zone": "Lenox Hill West", "area": "Manhattan", "pickable": true, "forecast": [17.11, 17.23, 18.53, 19.1, 20.88, 20.18, 18.89, 21.12, 23.48, 20.92, 18.83, 19.23, 19.93, 19.68, 19.73, 19.82, 19.06, 20.16, 20.45, 18.27, 18.35, 19.51, 18.93, 17.52], "if_rain": [17.81, 17.93, 19.22, 19.79, 21.57, 20.87, 19.58, 23.07, 25.43, 22.87, 19.42, 19.82, 20.52, 20.27, 20.32, 20.41, 22.87, 23.97, 24.25, 22.08, 20.91, 22.08, 21.5, 20.09]}, {"zone_id": 142, "zone": "Lincoln Square East", "area": "Manhattan", "pickable": true, "forecast": [19.0, 19.14, 19.52, 17.65, 21.07, 21.45, 19.78, 22.77, 25.23, 21.56, 18.59, 18.43, 19.26, 19.05, 19.61, 19.69, 18.63, 19.86, 20.42, 18.11, 19.74, 25.02, 25.55, 21.13], "if_rain": [19.69, 19.84, 20.21, 18.34, 21.76, 22.14, 20.48, 24.72, 27.18, 23.51, 19.18, 19.02, 19.85, 19.64, 20.2, 20.28, 22.44, 23.67, 24.23, 21.92, 22.31, 27.59, 28.12, 23.7]}, {"zone_id": 143, "zone": "Lincoln Square West", "area": "Manhattan", "pickable": true, "forecast": [18.73, 18.54, 19.61, 16.71, 19.87, 20.9, 19.89, 22.91, 26.64, 22.72, 17.43, 16.8, 17.12, 17.4, 17.89, 18.92, 18.08, 18.97, 19.48, 17.54, 17.34, 20.07, 20.88, 18.53], "if_rain": [19.42, 19.24, 20.31, 17.41, 20.57, 21.59, 20.58, 24.86, 28.59, 24.67, 18.02, 17.39, 17.71, 17.99, 18.48, 19.51, 21.89, 22.78, 23.29, 21.35, 19.91, 22.63, 23.44, 21.09]}, {"zone_id": 144, "zone": "Little Italy/NoLiTa", "area": "Manhattan", "pickable": true, "forecast": [18.59, 16.87, 18.26, 19.22, 18.01, 19.91, 21.43, 22.39, 25.7, 18.54, 15.99, 16.37, 17.31, 17.98, 18.06, 19.13, 18.76, 20.75, 21.31, 19.0, 18.9, 22.0, 23.56, 20.12], "if_rain": [19.28, 17.56, 18.96, 19.92, 18.7, 20.6, 22.12, 24.34, 27.65, 20.48, 16.58, 16.96, 17.9, 18.57, 18.65, 19.72, 22.57, 24.56, 25.12, 22.8, 21.46, 24.57, 26.13, 22.69]}, {"zone_id": 148, "zone": "Lower East Side", "area": "Manhattan", "pickable": true, "forecast": [17.6, 17.06, 18.02, 18.52, 20.67, 19.14, 20.5, 23.19, 29.58, 21.16, 15.54, 16.05, 16.91, 16.79, 16.9, 17.9, 17.99, 18.76, 18.44, 17.03, 16.89, 19.24, 20.88, 18.7], "if_rain": [18.3, 17.76, 18.72, 19.21, 21.36, 19.84, 21.19, 25.14, 31.53, 23.1, 16.13, 16.64, 17.5, 17.38, 17.49, 18.49, 21.8, 22.57, 22.25, 20.84, 19.46, 21.81, 23.45, 21.27]}, {"zone_id": 151, "zone": "Manhattan Valley", "area": "Manhattan", "pickable": true, "forecast": [18.95, 19.38, 19.03, 18.39, 22.9, 22.0, 20.61, 22.04, 20.61, 17.08, 14.9, 14.69, 15.58, 16.34, 17.02, 18.02, 17.92, 19.2, 19.18, 18.12, 17.66, 18.97, 19.42, 18.23], "if_rain": [19.64, 20.08, 19.73, 19.08, 23.59, 22.7, 21.31, 23.99, 22.56, 19.03, 15.49, 15.28, 16.17, 16.93, 17.61, 18.61, 21.72, 23.0, 22.99, 21.92, 20.23, 21.54, 21.99, 20.8]}, {"zone_id": 152, "zone": "Manhattanville", "area": "Manhattan", "pickable": true, "forecast": [17.69, 17.07, 17.56, 19.47, 23.22, 20.19, 17.71, 18.58, 16.55, 12.6, 12.51, 12.57, 13.77, 14.64, 16.45, 17.55, 18.01, 19.86, 18.53, 17.74, 17.65, 18.49, 18.14, 17.71], "if_rain": [18.38, 17.76, 18.25, 20.16, 23.91, 20.89, 18.4, 20.53, 18.5, 14.55, 13.1, 13.16, 14.36, 15.23, 17.04, 18.14, 21.82, 23.66, 22.33, 21.55, 20.22, 21.06, 20.71, 20.28]}, {"zone_id": 153, "zone": "Marble Hill", "area": "Manhattan", "pickable": true, "forecast": [18.65, 22.24, 20.0, 22.24, 19.98, 16.29, 16.7, 18.09, 17.61, 12.75, 13.02, 14.02, 13.96, 14.35, 16.98, 17.95, 17.97, 18.78, 17.67, 16.45, 16.3, 17.31, 17.46, 18.37], "if_rain": [19.35, 22.93, 20.69, 22.93, 20.68, 16.98, 17.4, 20.03, 19.56, 14.7, 13.61, 14.61, 14.55, 14.94, 17.57, 18.54, 21.78, 22.58, 21.48, 20.26, 18.87, 19.88, 20.03, 20.94]}, {"zone_id": 158, "zone": "Meatpacking/West Village West", "area": "Manhattan", "pickable": true, "forecast": [21.58, 19.48, 21.53, 21.34, 22.02, 24.28, 24.61, 21.63, 22.71, 18.31, 16.81, 16.53, 17.15, 17.03, 17.92, 18.49, 19.03, 21.05, 20.67, 19.43, 21.76, 31.72, 32.7, 26.13], "if_rain": [22.28, 20.17, 22.22, 22.03, 22.71, 24.98, 25.31, 23.58, 24.66, 20.26, 17.4, 17.12, 17.74, 17.62, 18.51, 19.08, 22.84, 24.86, 24.48, 23.23, 24.33, 34.29, 35.27, 28.69]}, {"zone_id": 161, "zone": "Midtown Center", "area": "Manhattan", "pickable": true, "forecast": [21.31, 19.69, 20.22, 21.05, 20.12, 18.47, 18.28, 19.13, 20.08, 19.59, 19.75, 21.48, 22.35, 22.64, 22.03, 22.23, 22.34, 25.7, 26.2, 23.32, 31.52, 41.72, 36.47, 25.42], "if_rain": [22.0, 20.39, 20.92, 21.74, 20.82, 19.16, 18.97, 21.08, 22.03, 21.54, 20.34, 22.07, 22.94, 23.23, 22.62, 22.82, 26.14, 29.51, 30.01, 27.13, 34.09, 44.29, 39.04, 27.99]}, {"zone_id": 162, "zone": "Midtown East", "area": "Manhattan", "pickable": true, "forecast": [21.82, 21.3, 22.81, 21.86, 20.99, 18.72, 18.31, 18.36, 19.21, 18.67, 19.34, 20.73, 21.83, 21.63, 21.15, 20.99, 21.24, 24.51, 25.12, 22.75, 28.41, 35.33, 30.58, 23.34], "if_rain": [22.51, 21.99, 23.5, 22.56, 21.68, 19.42, 19.0, 20.31, 21.16, 20.62, 19.93, 21.32, 22.42, 22.22, 21.74, 21.58, 25.05, 28.32, 28.92, 26.56, 30.98, 37.9, 33.15, 25.91]}, {"zone_id": 163, "zone": "Midtown North", "area": "Manhattan", "pickable": true, "forecast": [19.68, 18.85, 18.78, 18.64, 19.24, 19.51, 18.88, 20.99, 23.42, 21.32, 20.93, 21.47, 21.93, 21.67, 21.83, 21.85, 21.82, 23.94, 24.93, 21.88, 27.31, 35.28, 32.32, 23.43], "if_rain": [20.37, 19.54, 19.47, 19.33, 19.93, 20.2, 19.57, 22.94, 25.37, 23.27, 21.52, 22.06, 22.52, 22.26, 22.42, 22.44, 25.62, 27.75, 28.73, 25.69, 29.88, 37.85, 34.88, 26.0]}, {"zone_id": 164, "zone": "Midtown South", "area": "Manhattan", "pickable": true, "forecast": [20.07, 18.36, 18.62, 19.18, 20.1, 18.46, 16.99, 18.43, 21.57, 18.83, 17.74, 18.95, 19.71, 19.68, 19.32, 19.77, 20.66, 25.15, 26.44, 21.89, 23.7, 32.31, 32.05, 24.47], "if_rain": [20.76, 19.06, 19.32, 19.87, 20.8, 19.15, 17.68, 20.38, 23.52, 20.77, 18.33, 19.54, 20.3, 20.27, 19.91, 20.36, 24.47, 28.96, 30.25, 25.69, 26.27, 34.87, 34.62, 27.04]}, {"zone_id": 166, "zone": "Morningside Heights", "area": "Manhattan", "pickable": true, "forecast": [18.27, 17.74, 18.82, 18.99, 23.47, 22.15, 18.55, 19.22, 17.67, 14.72, 14.31, 14.68, 15.12, 16.52, 16.71, 17.89, 17.99, 19.86, 19.61, 18.82, 18.55, 20.12, 20.89, 18.0], "if_rain": [18.96, 18.44, 19.52, 19.68, 24.17, 22.84, 19.25, 21.17, 19.62, 16.67, 14.9, 15.27, 15.71, 17.11, 17.3, 18.48, 21.8, 23.67, 23.42, 22.63, 21.12, 22.69, 23.45, 20.57]}, {"zone_id": 170, "zone": "Murray Hill", "area": "Manhattan", "pickable": true, "forecast": [20.13, 18.49, 18.87, 19.55, 20.08, 19.23, 17.47, 18.04, 19.98, 18.31, 17.6, 18.89, 19.65, 19.66, 19.66, 20.02, 20.67, 24.64, 25.44, 21.48, 24.85, 32.32, 30.62, 23.22], "if_rain": [20.83, 19.18, 19.57, 20.24, 20.77, 19.92, 18.16, 19.99, 21.93, 20.26, 18.19, 19.48, 20.24, 20.25, 20.25, 20.61, 24.48, 28.45, 29.25, 25.29, 27.42, 34.89, 33.18, 25.78]}, {"zone_id": 186, "zone": "Penn Station/Madison Sq West", "area": "Manhattan", "pickable": true, "forecast": [21.51, 18.61, 18.2, 18.08, 17.46, 15.79, 15.77, 17.44, 21.65, 18.74, 17.08, 18.62, 18.46, 19.32, 19.05, 19.53, 19.98, 23.35, 24.26, 21.07, 22.03, 34.37, 36.95, 29.05], "if_rain": [22.2, 19.3, 18.89, 18.77, 18.15, 16.49, 16.46, 19.39, 23.6, 20.69, 17.67, 19.21, 19.05, 19.91, 19.64, 20.12, 23.78, 27.16, 28.06, 24.88, 24.6, 36.93, 39.52, 31.62]}, {"zone_id": 194, "zone": "Randalls Island", "area": "Manhattan", "pickable": false, "forecast": [39.36, null, null, null, null, null, null, 18.25, 23.07, 22.16, 26.11, 30.42, 28.05, 34.56, 33.13, 30.12, 28.95, 28.93, 28.53, 32.34, 32.51, 33.27, 31.76, 31.64], "if_rain": [40.06, null, null, null, null, null, null, 20.2, 25.02, 24.1, 26.7, 31.01, 28.64, 35.15, 33.72, 30.71, 32.76, 32.73, 32.34, 36.15, 35.08, 35.84, 34.32, 34.21]}, {"zone_id": 202, "zone": "Roosevelt Island", "area": "Manhattan", "pickable": true, "forecast": [19.19, 18.67, 18.44, 19.36, 19.09, 19.71, 18.19, 18.32, 18.81, 15.82, 15.18, 14.38, 15.44, 16.17, 17.37, 17.66, 17.27, 17.68, 18.44, 18.9, 18.94, 17.44, 19.07, 18.47], "if_rain": [19.89, 19.36, 19.14, 20.06, 19.78, 20.4, 18.88, 20.27, 20.76, 17.77, 15.77, 14.97, 16.03, 16.76, 17.96, 18.25, 21.07, 21.49, 22.25, 22.71, 21.51, 20.01, 21.64, 21.03]}, {"zone_id": 209, "zone": "Seaport", "area": "Manhattan", "pickable": true, "forecast": [19.31, 19.25, 19.67, 18.0, 16.6, 20.24, 19.33, 21.27, 21.96, 18.37, 17.33, 17.87, 18.14, 18.01, 18.95, 18.58, 19.03, 23.18, 23.53, 19.69, 20.21, 22.06, 22.35, 19.96], "if_rain": [20.0, 19.94, 20.37, 18.69, 17.3, 20.94, 20.03, 23.22, 23.91, 20.32, 17.92, 18.46, 18.73, 18.6, 19.54, 19.17, 22.84, 26.99, 27.34, 23.5, 22.77, 24.62, 24.91, 22.52]}, {"zone_id": 211, "zone": "SoHo", "area": "Manhattan", "pickable": true, "forecast": [20.0, 17.81, 20.52, 20.86, 22.24, 22.5, 23.06, 23.29, 24.97, 19.04, 17.49, 17.22, 17.33, 17.92, 18.2, 19.04, 19.44, 22.04, 22.87, 20.17, 20.85, 25.53, 26.13, 21.74], "if_rain": [20.7, 18.5, 21.21, 21.56, 22.93, 23.19, 23.75, 25.24, 26.92, 20.98, 18.08, 17.81, 17.92, 18.51, 18.79, 19.63, 23.25, 25.85, 26.68, 23.98, 23.41, 28.1, 28.69, 24.31]}, {"zone_id": 224, "zone": "Stuy Town/Peter Cooper Village", "area": "Manhattan", "pickable": true, "forecast": [17.19, 15.88, 14.44, 14.61, 19.45, 18.94, 20.57, 22.01, 27.15, 21.86, 16.23, 15.64, 15.97, 16.49, 16.58, 17.97, 17.42, 18.4, 19.0, 17.48, 16.99, 18.07, 19.03, 17.43], "if_rain": [17.88, 16.58, 15.13, 15.3, 20.14, 19.63, 21.26, 23.96, 29.1, 23.81, 16.82, 16.23, 16.56, 17.08, 17.18, 18.56, 21.23, 22.21, 22.81, 21.29, 19.56, 20.64, 21.6, 20.0]}, {"zone_id": 229, "zone": "Sutton Place/Turtle Bay North", "area": "Manhattan", "pickable": true, "forecast": [17.97, 18.18, 19.26, 18.65, 20.04, 19.86, 19.22, 19.66, 20.33, 17.92, 18.32, 18.22, 18.92, 19.22, 19.07, 19.15, 18.57, 20.38, 20.85, 19.47, 21.0, 24.72, 22.7, 19.07], "if_rain": [18.67, 18.88, 19.96, 19.34, 20.73, 20.55, 19.92, 21.61, 22.28, 19.87, 18.91, 18.81, 19.51, 19.81, 19.66, 19.74, 22.38, 24.19, 24.66, 23.28, 23.57, 27.29, 25.27, 21.64]}, {"zone_id": 230, "zone": "Times Sq/Theatre District", "area": "Manhattan", "pickable": true, "forecast": [20.61, 19.45, 19.75, 17.95, 17.21, 15.97, 14.56, 17.36, 21.92, 19.89, 19.22, 20.31, 20.6, 20.61, 20.69, 20.86, 21.24, 24.33, 26.01, 23.19, 27.86, 40.79, 38.11, 25.46], "if_rain": [21.3, 20.14, 20.44, 18.64, 17.9, 16.66, 15.26, 19.31, 23.87, 21.84, 19.81, 20.9, 21.19, 21.2, 21.28, 21.45, 25.04, 28.14, 29.82, 27.0, 30.43, 43.35, 40.68, 28.03]}, {"zone_id": 231, "zone": "TriBeCa/Civic Center", "area": "Manhattan", "pickable": true, "forecast": [20.36, 19.42, 20.76, 21.13, 22.05, 22.0, 21.34, 20.63, 21.74, 18.56, 17.83, 18.08, 18.65, 18.7, 18.82, 19.07, 19.94, 25.04, 25.21, 21.21, 21.22, 24.7, 23.72, 20.74], "if_rain": [21.05, 20.12, 21.45, 21.83, 22.74, 22.69, 22.04, 22.58, 23.69, 20.51, 18.42, 18.67, 19.24, 19.29, 19.41, 19.66, 23.75, 28.84, 29.01, 25.02, 23.79, 27.26, 26.28, 23.31]}, {"zone_id": 232, "zone": "Two Bridges/Seward Park", "area": "Manhattan", "pickable": true, "forecast": [17.33, 17.11, 17.38, 18.08, 18.31, 19.47, 19.44, 21.27, 25.21, 19.03, 13.89, 13.93, 14.43, 14.57, 16.27, 17.08, 16.96, 18.46, 18.05, 16.72, 16.66, 17.66, 18.77, 17.45], "if_rain": [18.02, 17.8, 18.07, 18.78, 19.0, 20.17, 20.13, 23.22, 27.16, 20.98, 14.48, 14.52, 15.02, 15.16, 16.86, 17.67, 20.77, 22.26, 21.86, 20.53, 19.22, 20.23, 21.34, 20.02]}, {"zone_id": 233, "zone": "UN/Turtle Bay South", "area": "Manhattan", "pickable": true, "forecast": [19.4, 17.89, 18.43, 16.63, 19.59, 18.67, 18.52, 19.42, 21.26, 18.91, 17.71, 18.16, 18.81, 19.25, 18.67, 19.06, 19.29, 21.92, 23.15, 20.83, 23.03, 28.44, 25.6, 19.73], "if_rain": [20.09, 18.58, 19.13, 17.33, 20.28, 19.37, 19.22, 21.37, 23.21, 20.86, 18.3, 18.75, 19.4, 19.84, 19.26, 19.65, 23.1, 25.73, 26.96, 24.64, 25.6, 31.01, 28.17, 22.3]}, {"zone_id": 234, "zone": "Union Sq", "area": "Manhattan", "pickable": true, "forecast": [20.16, 19.05, 19.88, 20.31, 23.33, 21.5, 20.1, 20.0, 22.33, 18.24, 16.76, 17.28, 17.92, 17.87, 17.9, 18.25, 18.82, 21.77, 22.6, 20.05, 21.53, 30.15, 30.6, 23.48], "if_rain": [20.85, 19.75, 20.57, 21.0, 24.03, 22.19, 20.8, 21.95, 24.28, 20.18, 17.35, 17.87, 18.51, 18.46, 18.49, 18.84, 22.63, 25.57, 26.41, 23.86, 24.1, 32.72, 33.17, 26.05]}, {"zone_id": 236, "zone": "Upper East Side North", "area": "Manhattan", "pickable": true, "forecast": [19.96, 19.08, 19.36, 18.01, 21.85, 25.33, 21.79, 26.03, 26.33, 21.36, 18.65, 19.08, 20.04, 19.72, 20.27, 21.33, 20.14, 21.51, 21.27, 19.17, 19.61, 20.81, 20.35, 19.24], "if_rain": [20.65, 19.77, 20.05, 18.71, 22.54, 26.02, 22.48, 27.97, 28.28, 23.31, 19.24, 19.67, 20.63, 20.31, 20.86, 21.92, 23.95, 25.32, 25.08, 22.98, 22.18, 23.38, 22.91, 21.81]}, {"zone_id": 237, "zone": "Upper East Side South", "area": "Manhattan", "pickable": true, "forecast": [20.96, 19.27, 20.16, 20.97, 22.42, 22.76, 20.95, 23.13, 23.3, 20.78, 19.77, 20.51, 20.98, 21.32, 20.86, 21.23, 20.0, 21.46, 22.17, 20.2, 22.02, 26.65, 25.31, 21.06], "if_rain": [21.65, 19.96, 20.86, 21.67, 23.12, 23.45, 21.64, 25.08, 25.25, 22.73, 20.36, 21.1, 21.57, 21.91, 21.45, 21.82, 23.81, 25.27, 25.97, 24.01, 24.59, 29.22, 27.88, 23.63]}, {"zone_id": 238, "zone": "Upper West Side North", "area": "Manhattan", "pickable": true, "forecast": [18.72, 18.2, 19.4, 18.61, 18.27, 21.45, 20.85, 23.48, 23.86, 20.32, 16.94, 16.41, 17.1, 17.44, 18.08, 20.5, 18.12, 19.68, 19.66, 17.94, 18.24, 19.45, 19.44, 18.18], "if_rain": [19.41, 18.89, 20.1, 19.3, 18.96, 22.14, 21.55, 25.43, 25.81, 22.27, 17.53, 17.0, 17.69, 18.03, 18.67, 21.09, 21.93, 23.49, 23.47, 21.75, 20.81, 22.01, 22.01, 20.75]}, {"zone_id": 239, "zone": "Upper West Side South", "area": "Manhattan", "pickable": true, "forecast": [19.28, 19.81, 20.09, 15.91, 18.73, 21.47, 20.63, 25.41, 27.55, 22.93, 17.73, 17.63, 18.65, 18.66, 19.35, 19.26, 18.72, 19.79, 19.58, 17.91, 18.64, 20.78, 21.42, 20.26], "if_rain": [19.98, 20.51, 20.79, 16.61, 19.43, 22.16, 21.32, 27.36, 29.5, 24.88, 18.32, 18.22, 19.24, 19.25, 19.94, 19.85, 22.53, 23.6, 23.39, 21.72, 21.21, 23.35, 23.98, 22.83]}, {"zone_id": 243, "zone": "Washington Heights North", "area": "Manhattan", "pickable": true, "forecast": [18.7, 18.87, 19.06, 20.6, 21.58, 18.27, 17.23, 18.51, 17.18, 14.87, 14.07, 14.19, 14.53, 15.33, 17.44, 18.73, 18.74, 20.45, 19.43, 16.97, 17.11, 17.36, 18.06, 18.62], "if_rain": [19.39, 19.56, 19.75, 21.29, 22.28, 18.96, 17.92, 20.46, 19.12, 16.82, 14.66, 14.78, 15.12, 15.92, 18.03, 19.32, 22.55, 24.26, 23.24, 20.78, 19.68, 19.92, 20.63, 21.19]}, {"zone_id": 244, "zone": "Washington Heights South", "area": "Manhattan", "pickable": true, "forecast": [18.62, 18.01, 18.6, 19.7, 21.3, 17.87, 16.39, 18.06, 16.39, 13.76, 13.94, 15.55, 16.13, 17.04, 18.17, 19.7, 20.45, 22.62, 20.78, 18.52, 17.71, 17.47, 18.18, 18.35], "if_rain": [19.31, 18.7, 19.3, 20.39, 22.0, 18.56, 17.08, 20.01, 18.34, 15.71, 14.53, 16.14, 16.72, 17.63, 18.76, 20.29, 24.26, 26.43, 24.58, 22.33, 20.27, 20.04, 20.75, 20.92]}, {"zone_id": 246, "zone": "West Chelsea/Hudson Yards", "area": "Manhattan", "pickable": true, "forecast": [22.28, 20.29, 20.49, 21.42, 22.87, 20.9, 19.37, 18.14, 18.4, 16.86, 16.36, 16.91, 17.71, 18.43, 19.49, 21.01, 22.32, 25.91, 25.97, 22.28, 25.39, 34.1, 33.65, 24.78], "if_rain": [22.97, 20.98, 21.18, 22.12, 23.56, 21.59, 20.06, 20.09, 20.35, 18.81, 16.95, 17.5, 18.3, 19.02, 20.08, 21.6, 26.13, 29.72, 29.77, 26.09, 27.96, 36.67, 36.22, 27.35]}, {"zone_id": 249, "zone": "West Village", "area": "Manhattan", "pickable": true, "forecast": [19.42, 17.98, 18.84, 19.59, 22.06, 21.94, 21.79, 21.25, 23.45, 18.77, 17.07, 17.14, 17.22, 17.87, 17.96, 18.34, 18.53, 19.98, 19.99, 18.83, 20.56, 28.53, 29.15, 23.2], "if_rain": [20.12, 18.67, 19.53, 20.29, 22.75, 22.63, 22.48, 23.2, 25.4, 20.71, 17.66, 17.73, 17.81, 18.46, 18.55, 18.93, 22.34, 23.78, 23.8, 22.64, 23.13, 31.1, 31.71, 25.77]}, {"zone_id": 261, "zone": "World Trade Center", "area": "Manhattan", "pickable": true, "forecast": [21.48, 21.42, 21.46, 17.24, 17.41, 19.19, 19.34, 19.72, 20.39, 17.54, 16.91, 17.64, 18.42, 18.88, 19.23, 19.91, 21.35, 28.48, 28.63, 21.76, 22.61, 24.91, 24.02, 21.36], "if_rain": [22.17, 22.11, 22.15, 17.93, 18.11, 19.88, 20.03, 21.67, 22.34, 19.49, 17.5, 18.23, 19.01, 19.47, 19.82, 20.5, 25.15, 32.29, 32.44, 25.57, 25.18, 27.48, 26.58, 23.92]}, {"zone_id": 262, "zone": "Yorkville East", "area": "Manhattan", "pickable": true, "forecast": [17.88, 18.56, 19.42, 16.93, 20.02, 20.93, 19.95, 23.29, 28.06, 24.36, 19.12, 17.96, 18.72, 18.17, 18.44, 19.54, 18.72, 20.19, 20.35, 18.29, 18.02, 18.33, 18.15, 17.4], "if_rain": [18.57, 19.25, 20.12, 17.62, 20.71, 21.63, 20.64, 25.24, 30.01, 26.31, 19.71, 18.55, 19.31, 18.76, 19.03, 20.13, 22.53, 24.0, 24.16, 22.1, 20.59, 20.9, 20.72, 19.96]}, {"zone_id": 263, "zone": "Yorkville West", "area": "Manhattan", "pickable": true, "forecast": [17.18, 17.49, 18.48, 18.4, 21.24, 22.72, 21.44, 24.93, 27.14, 22.47, 17.99, 18.11, 18.5, 19.04, 19.11, 19.83, 18.85, 19.73, 19.75, 17.5, 18.12, 18.64, 17.89, 17.38], "if_rain": [17.87, 18.19, 19.17, 19.1, 21.94, 23.41, 22.14, 26.88, 29.08, 24.42, 18.58, 18.7, 19.09, 19.63, 19.7, 20.42, 22.66, 23.54, 23.56, 21.31, 20.69, 21.21, 20.46, 19.95]}]}</script>
+<script>
+(() => {
+  const plan = JSON.parse(document.getElementById('plan-data').textContent);
+  const $ = (id) => document.getElementById(id);
+  const money = (v) => `$${v.toFixed(2)}`;
+  const hourName = (h) => `${(h % 12) || 12}${h < 12 ? 'am' : 'pm'}`;
+  const dateObj = new Date(`${plan.date}T12:00:00`);
+  const longDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+  const weekend = [0, 6].includes(dateObj.getDay());
+  const BLOCKS = [
+    { id: 'all', label: 'All day', hours: [...Array(24).keys()] },
+    { id: 'morning', label: 'Morning 6–10am', hours: [6, 7, 8, 9] },
+    { id: 'midday', label: 'Midday 10am–4pm', hours: [10, 11, 12, 13, 14, 15] },
+    { id: 'evening', label: weekend ? 'Evening 4–8pm' : 'Rush 4–8pm', hours: [16, 17, 18, 19] },
+    { id: 'night', label: 'Night 8pm–12am', hours: [20, 21, 22, 23] },
+    { id: 'late', label: 'Late 12–6am', hours: [0, 1, 2, 3, 4, 5] },
+  ];
+  const state = { scenario: 'forecast', block: 'evening' };
+
+  $('date').textContent = `${longDate} · Manhattan and airports`;
+  $('made').textContent = `Plan made ${new Date(plan.made_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })} from the NWS forecast. ${plan.dollars}.`;
+
+  // weather strip
+  const icon = (c) => {
+    const wet = /Rain|Snow/.test(c);
+    return wet
+      ? '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 C8 2 3.5 7.5 3.5 10 a4.5 4.5 0 0 0 9 0 C12.5 7.5 8 2 8 2Z" fill="var(--rain)"/></svg>'
+      : '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.5" fill="#f2a900"/><g stroke="#f2a900" stroke-width="1.4" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M3 13l1.4-1.4M11.6 4.4 13 3"/></g></svg>';
+  };
+  const wx = $('wx');
+  plan.hours.filter((h) => h.hour >= 5).concat(plan.hours.filter((h) => h.hour < 5)).forEach((h) => {
+    const d = document.createElement('div');
+    d.className = 'h' + (/Rain|Snow/.test(h.condition) ? ' wet' : '');
+    d.title = h.condition;
+    d.innerHTML = `<span class="t"></span>${icon(h.condition)}<b></b><span class="t"></span>`;
+    const t = d.querySelectorAll('.t');
+    t[0].textContent = hourName(h.hour);
+    d.querySelector('b').textContent = h.temp_f == null ? '–' : `${h.temp_f}°`;
+    t[1].textContent = h.rain_chance == null ? '' : `${h.rain_chance}%`;
+    wx.appendChild(d);
+  });
+  const wetHours = plan.hours.filter((h) => /Rain|Snow/.test(h.condition));
+  const dry = wetHours.length === 0;
+
+  // time-of-day chips
+  const blocksEl = $('blocks');
+  BLOCKS.forEach((b) => {
+    const c = document.createElement('button');
+    c.className = 'chip'; c.textContent = b.label; c.dataset.id = b.id;
+    c.addEventListener('click', () => { state.block = b.id; render(); });
+    blocksEl.appendChild(c);
+  });
+  $('sc-fc').addEventListener('click', () => { state.scenario = 'forecast'; render(); });
+  $('sc-rain').addEventListener('click', () => { state.scenario = 'if_rain'; render(); });
+
+  const avgOver = (arr, hours) => {
+    const v = hours.map((h) => arr[h]).filter((x) => x != null);
+    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+  };
+  const pickable = plan.zones.filter((z) => z.pickable);
+
+  function ranked(hours, key) {
+    return pickable.map((z) => ({ z, v: avgOver(z[key], hours) })).filter((r) => r.v != null).sort((a, b) => b.v - a.v);
+  }
+
+  function render() {
+    document.querySelectorAll('#blocks .chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.id === state.block)));
+    $('sc-fc').setAttribute('aria-pressed', String(state.scenario === 'forecast'));
+    $('sc-rain').setAttribute('aria-pressed', String(state.scenario === 'if_rain'));
+    const block = BLOCKS.find((b) => b.id === state.block);
+    const key = state.scenario;
+    const rows = ranked(block.hours, key);
+    const mean = rows.filter((r) => r.z.area === 'Manhattan').reduce((a, r) => a + r.v, 0) / Math.max(1, rows.filter((r) => r.z.area === 'Manhattan').length);
+
+    // headline: best block and zone for the day
+    const bestBlock = BLOCKS.slice(1).map((b) => ({ b, top: ranked(b.hours, key)[0] })).sort((a, c) => c.top.v - a.top.v)[0];
+    const big = $('headline'); big.innerHTML = '';
+    const p1 = document.createTextNode('Best bet: ');
+    const strong = document.createElement('span'); strong.textContent = `${bestBlock.top.z.zone}, ${bestBlock.b.label.replace(/^\w+ /, '').toLowerCase()}`;
+    const p2 = document.createTextNode(', about ');
+    const m = document.createElement('span'); m.className = 'm'; m.textContent = `${money(bestBlock.top.v)}/hr`;
+    big.append(p1, strong, p2, m);
+    $('headline-why').textContent = key === 'if_rain'
+      ? 'Showing the plan if it rains all day. Rain pays most at rush hours and in the evening.'
+      : dry ? 'Tomorrow looks dry, so this follows the usual pattern for a ' + longDate.split(',')[0] + '. Tap "What if it rains?" to see how rain would change it.'
+            : `Rain is in the forecast for ${wetHours.length} hour${wetHours.length > 1 ? 's' : ''}, which lifts profit in busy hours.`;
+
+    // ranked list
+    const top = rows.slice(0, 10), max = top[0]?.v || 1, min = Math.min(...rows.map((r) => r.v));
+    const ol = $('rank'); ol.innerHTML = '';
+    top.forEach((r, i) => {
+      const li = document.createElement('li');
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = i + 1;
+      const z = document.createElement('span'); z.className = 'z'; z.textContent = r.z.zone;
+      if (r.z.area === 'Airport') { const s = document.createElement('small'); s.textContent = 'assumes 1-hr lot wait'; z.appendChild(s); }
+      const bar = document.createElement('span'); bar.className = 'bar';
+      const fill = document.createElement('i'); fill.style.width = `${Math.max(6, 100 * (r.v - min * 0.9) / (max - min * 0.9))}%`; bar.appendChild(fill);
+      const v = document.createElement('span'); v.className = 'v'; v.textContent = money(r.v);
+      const s = document.createElement('small'); s.textContent = '/hr'; v.appendChild(s);
+      li.append(n, z, bar, v);
+      ol.appendChild(li);
+      if (i === 0 && mean) {
+        const c = document.createElement('div'); c.className = 'callout';
+        c.textContent = `${Math.round(100 * (r.v / mean - 1))}% more than the average Manhattan zone at this time`;
+        li.appendChild(c);
+      }
+      if (key === 'if_rain' && i === 2) {
+        const base = avgOver(r.z.forecast, block.hours);
+        if (base != null) {
+          const c = document.createElement('div'); c.className = 'callout';
+          c.textContent = `Rain adds about ${money(r.v - base)}/hr here`;
+          li.appendChild(c);
+        }
+      }
+    });
+    drawHours(key);
+  }
+
+  function drawHours(key) {
+    const el = $('hours'); el.innerHTML = '';
+    const best = [...Array(24).keys()].map((h) => {
+      const r = pickable.map((z) => ({ z, v: z[key][h] })).filter((x) => x.v != null).sort((a, b) => b.v - a.v)[0];
+      return { h, v: r ? r.v : 0, zone: r ? r.z.zone : '' };
+    });
+    const W = Math.max(280, el.clientWidth || 360), H = 170, padB = 20, padT = 18;
+    const max = Math.max(...best.map((b) => b.v)) * 1.08;
+    const bw = W / 24;
+    const top3 = [...best].sort((a, b) => b.v - a.v).slice(0, 3).map((b) => b.h);
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'Best expected profit per hour for each hour of the day');
+    const defs = document.createElementNS(ns, 'defs');
+    defs.innerHTML = '<linearGradient id="g" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="var(--bar-b)"/><stop offset="1" stop-color="var(--bar-a)"/></linearGradient>';
+    svg.appendChild(defs);
+    const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true;
+    best.forEach((b) => {
+      const h = (H - padB - padT) * b.v / max, x = b.h * bw + 1.5, y = H - padB - h;
+      const r = document.createElementNS(ns, 'rect');
+      r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', bw - 3); r.setAttribute('height', h); r.setAttribute('rx', 3);
+      r.setAttribute('fill', top3.includes(b.h) ? 'url(#g)' : 'var(--track)');
+      svg.appendChild(r);
+      if (top3.includes(b.h)) {
+        const t = document.createElementNS(ns, 'text'); t.setAttribute('x', x + (bw - 3) / 2); t.setAttribute('y', y - 4);
+        t.setAttribute('text-anchor', 'middle'); t.textContent = `$${Math.round(b.v)}`; svg.appendChild(t);
+      }
+      const hit = document.createElementNS(ns, 'rect');
+      hit.setAttribute('x', b.h * bw); hit.setAttribute('y', 0); hit.setAttribute('width', bw); hit.setAttribute('height', H); hit.setAttribute('fill', 'transparent');
+      hit.addEventListener('mousemove', (ev) => {
+        tip.innerHTML = ''; const bb = document.createElement('b'); bb.textContent = `${hourName(b.h)} · ${money(b.v)}/hr`;
+        tip.append(bb, document.createTextNode(b.zone)); tip.hidden = false;
+        const box = el.getBoundingClientRect(); let lx = ev.clientX - box.left + 10;
+        if (lx + tip.offsetWidth > box.width) lx = ev.clientX - box.left - tip.offsetWidth - 10;
+        tip.style.left = `${lx}px`; tip.style.top = '0px';
+      });
+      hit.addEventListener('mouseleave', () => { tip.hidden = true; });
+      svg.appendChild(hit);
+    });
+    [0, 6, 12, 18].forEach((h) => {
+      const t = document.createElementNS(ns, 'text'); t.setAttribute('x', h * bw + bw / 2); t.setAttribute('y', H - 5);
+      t.setAttribute('text-anchor', h === 0 ? 'start' : 'middle'); if (h === 0) t.setAttribute('x', 1);
+      t.textContent = hourName(h); svg.appendChild(t);
+    });
+    el.append(svg, tip);
+    $('hours-sub').textContent = `top 3: ${top3.sort((a, b) => a - b).map(hourName).join(', ')}`;
+  }
+
+  render();
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => drawHours(state.scenario), 150); });
+})();
+</script>

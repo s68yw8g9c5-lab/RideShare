@@ -1,0 +1,291 @@
+<title>Plan Tomorrow Concept</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: a phone-width app screen centered on a soft backdrop; header, weather strip, scenario + time pickers, ranked zone list, best-hours chart, method notes */
+:root {
+  --backdrop: #f1f1f4; --screen: #ffffff; --ink: #111114; --ink-2: #5c5c66; --ink-3: #8b8b96;
+  --line: #ececf0; --chip: #f2f2f5; --chip-on: #111114; --chip-on-ink: #ffffff;
+  --money: #2f9e44; --good-bg: #59b259; --good-ink: #ffffff; --bad-bg: #d9475a;
+  --bar-a: #d6409f; --bar-b: #6c4fd8; --track: #ececf3; --rain: #3b82c4;
+  --font: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --backdrop: #0d0d10; --screen: #17171b; --ink: #f2f2f5; --ink-2: #b4b4bf; --ink-3: #85858f;
+  --line: #2a2a31; --chip: #24242b; --chip-on: #f2f2f5; --chip-on-ink: #111114;
+  --money: #5cc46c; --good-bg: #3f8f45; --good-ink: #ffffff; --bad-bg: #b8394b;
+  --bar-a: #e55bb0; --bar-b: #8a72ec; --track: #2a2a33; --rain: #6aa9e0; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --backdrop: #0d0d10; --screen: #17171b; --ink: #f2f2f5; --ink-2: #b4b4bf; --ink-3: #85858f;
+  --line: #2a2a31; --chip: #24242b; --chip-on: #f2f2f5; --chip-on-ink: #111114;
+  --money: #5cc46c; --good-bg: #3f8f45; --good-ink: #ffffff; --bad-bg: #b8394b;
+  --bar-a: #e55bb0; --bar-b: #8a72ec; --track: #2a2a33; --rain: #6aa9e0; color-scheme: dark }
+
+body { background: var(--backdrop); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.45; }
+.page { display: flex; flex-direction: column; align-items: center; gap: 14px; padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.concept { max-width: 420px; width: 100%; font-size: 12px; color: var(--ink-2); text-align: center; text-wrap: balance; }
+.concept b { color: var(--ink); font-weight: 700; }
+.screen { width: 100%; max-width: 420px; background: var(--screen); border-radius: 28px; border: 1px solid var(--line);
+  box-shadow: 0 10px 40px rgb(0 0 0 / .08); overflow: hidden; display: flex; flex-direction: column; }
+.top { padding: 22px 20px 10px; display: flex; flex-direction: column; gap: 2px; text-align: center; }
+.top h1 { margin: 0; font-size: 17px; font-weight: 800; }
+.top .sub { font-size: 13px; color: var(--ink-2); }
+.hero { padding: 6px 20px 16px; display: flex; flex-direction: column; gap: 6px; }
+.hero .big { font-size: 22px; font-weight: 800; line-height: 1.25; text-wrap: balance; }
+.hero .big .m { color: var(--money); }
+.hero .why { font-size: 13px; color: var(--ink-2); }
+section.blk { border-top: 8px solid var(--chip); padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.h2 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.h2 h2 { margin: 0; font-size: 16px; font-weight: 800; }
+.h2 span { font-size: 12px; color: var(--ink-3); }
+.wx { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+.wx .h { flex: 0 0 auto; width: 52px; border-radius: 12px; background: var(--chip); padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 12px; }
+.wx .h b { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.wx .h .t { color: var(--ink-2); }
+.wx .h.wet { background: color-mix(in srgb, var(--rain) 16%, var(--chip)); }
+.wx .h svg { width: 16px; height: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { appearance: none; border: 0; background: var(--chip); color: var(--ink); font: 600 13px var(--font); padding: 8px 12px; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.chip[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-ink); }
+.chip:focus-visible { outline: 2px solid var(--bar-b); outline-offset: 2px; }
+ol.rank { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+ol.rank li { display: grid; grid-template-columns: 26px minmax(0, 1fr) 84px 64px; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+ol.rank li:last-child { border-bottom: 0; }
+.n { font-weight: 700; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.z { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.z small { display: block; font-weight: 500; font-size: 11px; color: var(--ink-3); }
+.bar { height: 8px; border-radius: 99px; background: var(--track); overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--bar-a), var(--bar-b)); }
+.v { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.v small { display: block; font-size: 11px; color: var(--ink-3); font-weight: 500; }
+.callout { grid-column: 1 / -1; border-radius: 10px; padding: 8px 12px; font-size: 13px; font-weight: 600; color: var(--good-ink); background: var(--good-bg); }
+.callout.down { background: var(--bad-bg); }
+.chart { position: relative; }
+.chart svg { display: block; width: 100%; height: auto; }
+.chart text { fill: var(--ink-3); font: 500 10px var(--font); }
+.tip { position: absolute; pointer-events: none; background: var(--screen); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 6px 20px rgb(0 0 0 / .12); padding: 6px 10px; font-size: 12px; white-space: nowrap; }
+.tip b { display: block; }
+.notes { font-size: 12px; color: var(--ink-2); display: flex; flex-direction: column; gap: 8px; }
+.notes p { margin: 0; }
+.notes b { color: var(--ink); }
+.foot { max-width: 420px; width: 100%; font-size: 11px; color: var(--ink-3); text-align: center; }
+@media (prefers-reduced-motion: no-preference) { .bar i { transition: width .35s ease-out; } }
+</style>
+
+<div class="page">
+  <p class="concept"><b>A feature concept for Gridwise drivers</b>, built from public NYC data by an independent student project. Not a Gridwise product.</p>
+
+  <main class="screen" id="app">
+    <header class="top">
+      <h1>Plan Tomorrow</h1>
+      <span class="sub" id="date">Manhattan and airports</span>
+    </header>
+    <div class="hero">
+      <div class="big" id="headline">Loading your plan</div>
+      <div class="why" id="headline-why"></div>
+    </div>
+
+    <section class="blk" aria-labelledby="wx-h">
+      <div class="h2"><h2 id="wx-h">Tomorrow's weather</h2><span>National Weather Service</span></div>
+      <div class="wx" id="wx"></div>
+      <div class="chips" role="group" aria-label="Weather to plan for">
+        <button class="chip" id="sc-fc" aria-pressed="true">Use the forecast</button>
+        <button class="chip" id="sc-rain" aria-pressed="false">What if it rains?</button>
+      </div>
+    </section>
+
+    <section class="blk" aria-labelledby="rank-h">
+      <div class="h2"><h2 id="rank-h">Where to drive</h2><span>profit per hour</span></div>
+      <div class="chips" role="group" aria-label="Time of day" id="blocks"></div>
+      <ol class="rank" id="rank"></ol>
+    </section>
+
+    <section class="blk" aria-labelledby="hours-h">
+      <div class="h2"><h2 id="hours-h">When to drive</h2><span id="hours-sub">best zone each hour</span></div>
+      <div class="chart" id="hours"></div>
+    </section>
+
+    <section class="blk notes" aria-labelledby="how-h">
+      <div class="h2"><h2 id="how-h">How this is worked out</h2></div>
+      <p><b>Profit, not pay.</b> Driver pay plus tips, minus 72.5 cents a mile for gas, wear and insurance, divided by every hour you work, including time between rides. Airport figures assume a one-hour wait in the taxi lot.</p>
+      <p><b>From history plus tomorrow's weather.</b> Each zone's usual earnings for this day and hour over the last 12 months, moved up or down by the forecast. Rain adds the most on weekday rush hours and evenings.</p>
+      <p id="accuracy"><b>Accuracy.</b> This is a preview. A test against 2026 results is running, and its hit rate will be shown here.</p>
+      <p><b>Data.</b> NYC TLC Uber and Lyft trip records (Jan 2024 to Aug 2026), NWS forecast for Central Park, August 2026 dollars. Randalls Island is left out because its busy days are stadium and festival events.</p>
+    </section>
+  </main>
+  <p class="foot" id="made"></p>
+</div>
+
+<script id="plan-data" type="application/json">__PLAN_JSON__</script>
+<script>
+(() => {
+  const plan = JSON.parse(document.getElementById('plan-data').textContent);
+  const $ = (id) => document.getElementById(id);
+  const money = (v) => `$${v.toFixed(2)}`;
+  const hourName = (h) => `${(h % 12) || 12}${h < 12 ? 'am' : 'pm'}`;
+  const dateObj = new Date(`${plan.date}T12:00:00`);
+  const longDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+  const weekend = [0, 6].includes(dateObj.getDay());
+  const BLOCKS = [
+    { id: 'all', label: 'All day', hours: [...Array(24).keys()] },
+    { id: 'morning', label: 'Morning 6–10am', hours: [6, 7, 8, 9] },
+    { id: 'midday', label: 'Midday 10am–4pm', hours: [10, 11, 12, 13, 14, 15] },
+    { id: 'evening', label: weekend ? 'Evening 4–8pm' : 'Rush 4–8pm', hours: [16, 17, 18, 19] },
+    { id: 'night', label: 'Night 8pm–12am', hours: [20, 21, 22, 23] },
+    { id: 'late', label: 'Late 12–6am', hours: [0, 1, 2, 3, 4, 5] },
+  ];
+  const state = { scenario: 'forecast', block: 'evening' };
+
+  $('date').textContent = `${longDate} · Manhattan and airports`;
+  $('made').textContent = `Plan made ${new Date(plan.made_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })} from the NWS forecast. ${plan.dollars}.`;
+
+  // weather strip
+  const icon = (c) => {
+    const wet = /Rain|Snow/.test(c);
+    return wet
+      ? '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2 C8 2 3.5 7.5 3.5 10 a4.5 4.5 0 0 0 9 0 C12.5 7.5 8 2 8 2Z" fill="var(--rain)"/></svg>'
+      : '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.5" fill="#f2a900"/><g stroke="#f2a900" stroke-width="1.4" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6 13 13M3 13l1.4-1.4M11.6 4.4 13 3"/></g></svg>';
+  };
+  const wx = $('wx');
+  plan.hours.filter((h) => h.hour >= 5).concat(plan.hours.filter((h) => h.hour < 5)).forEach((h) => {
+    const d = document.createElement('div');
+    d.className = 'h' + (/Rain|Snow/.test(h.condition) ? ' wet' : '');
+    d.title = h.condition;
+    d.innerHTML = `<span class="t"></span>${icon(h.condition)}<b></b><span class="t"></span>`;
+    const t = d.querySelectorAll('.t');
+    t[0].textContent = hourName(h.hour);
+    d.querySelector('b').textContent = h.temp_f == null ? '–' : `${h.temp_f}°`;
+    t[1].textContent = h.rain_chance == null ? '' : `${h.rain_chance}%`;
+    wx.appendChild(d);
+  });
+  const wetHours = plan.hours.filter((h) => /Rain|Snow/.test(h.condition));
+  const dry = wetHours.length === 0;
+
+  // time-of-day chips
+  const blocksEl = $('blocks');
+  BLOCKS.forEach((b) => {
+    const c = document.createElement('button');
+    c.className = 'chip'; c.textContent = b.label; c.dataset.id = b.id;
+    c.addEventListener('click', () => { state.block = b.id; render(); });
+    blocksEl.appendChild(c);
+  });
+  $('sc-fc').addEventListener('click', () => { state.scenario = 'forecast'; render(); });
+  $('sc-rain').addEventListener('click', () => { state.scenario = 'if_rain'; render(); });
+
+  const avgOver = (arr, hours) => {
+    const v = hours.map((h) => arr[h]).filter((x) => x != null);
+    return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+  };
+  const pickable = plan.zones.filter((z) => z.pickable);
+
+  function ranked(hours, key) {
+    return pickable.map((z) => ({ z, v: avgOver(z[key], hours) })).filter((r) => r.v != null).sort((a, b) => b.v - a.v);
+  }
+
+  function render() {
+    document.querySelectorAll('#blocks .chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.id === state.block)));
+    $('sc-fc').setAttribute('aria-pressed', String(state.scenario === 'forecast'));
+    $('sc-rain').setAttribute('aria-pressed', String(state.scenario === 'if_rain'));
+    const block = BLOCKS.find((b) => b.id === state.block);
+    const key = state.scenario;
+    const rows = ranked(block.hours, key);
+    const mean = rows.filter((r) => r.z.area === 'Manhattan').reduce((a, r) => a + r.v, 0) / Math.max(1, rows.filter((r) => r.z.area === 'Manhattan').length);
+
+    // headline: best block and zone for the day
+    const bestBlock = BLOCKS.slice(1).map((b) => ({ b, top: ranked(b.hours, key)[0] })).sort((a, c) => c.top.v - a.top.v)[0];
+    const big = $('headline'); big.innerHTML = '';
+    const p1 = document.createTextNode('Best bet: ');
+    const strong = document.createElement('span'); strong.textContent = `${bestBlock.top.z.zone}, ${bestBlock.b.label.replace(/^\w+ /, '').toLowerCase()}`;
+    const p2 = document.createTextNode(', about ');
+    const m = document.createElement('span'); m.className = 'm'; m.textContent = `${money(bestBlock.top.v)}/hr`;
+    big.append(p1, strong, p2, m);
+    $('headline-why').textContent = key === 'if_rain'
+      ? 'Showing the plan if it rains all day. Rain pays most at rush hours and in the evening.'
+      : dry ? 'Tomorrow looks dry, so this follows the usual pattern for a ' + longDate.split(',')[0] + '. Tap "What if it rains?" to see how rain would change it.'
+            : `Rain is in the forecast for ${wetHours.length} hour${wetHours.length > 1 ? 's' : ''}, which lifts profit in busy hours.`;
+
+    // ranked list
+    const top = rows.slice(0, 10), max = top[0]?.v || 1, min = Math.min(...rows.map((r) => r.v));
+    const ol = $('rank'); ol.innerHTML = '';
+    top.forEach((r, i) => {
+      const li = document.createElement('li');
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = i + 1;
+      const z = document.createElement('span'); z.className = 'z'; z.textContent = r.z.zone;
+      if (r.z.area === 'Airport') { const s = document.createElement('small'); s.textContent = 'assumes 1-hr lot wait'; z.appendChild(s); }
+      const bar = document.createElement('span'); bar.className = 'bar';
+      const fill = document.createElement('i'); fill.style.width = `${Math.max(6, 100 * (r.v - min * 0.9) / (max - min * 0.9))}%`; bar.appendChild(fill);
+      const v = document.createElement('span'); v.className = 'v'; v.textContent = money(r.v);
+      const s = document.createElement('small'); s.textContent = '/hr'; v.appendChild(s);
+      li.append(n, z, bar, v);
+      ol.appendChild(li);
+      if (i === 0 && mean) {
+        const c = document.createElement('div'); c.className = 'callout';
+        c.textContent = `${Math.round(100 * (r.v / mean - 1))}% more than the average Manhattan zone at this time`;
+        li.appendChild(c);
+      }
+      if (key === 'if_rain' && i === 2) {
+        const base = avgOver(r.z.forecast, block.hours);
+        if (base != null) {
+          const c = document.createElement('div'); c.className = 'callout';
+          c.textContent = `Rain adds about ${money(r.v - base)}/hr here`;
+          li.appendChild(c);
+        }
+      }
+    });
+    drawHours(key);
+  }
+
+  function drawHours(key) {
+    const el = $('hours'); el.innerHTML = '';
+    const best = [...Array(24).keys()].map((h) => {
+      const r = pickable.map((z) => ({ z, v: z[key][h] })).filter((x) => x.v != null).sort((a, b) => b.v - a.v)[0];
+      return { h, v: r ? r.v : 0, zone: r ? r.z.zone : '' };
+    });
+    const W = Math.max(280, el.clientWidth || 360), H = 170, padB = 20, padT = 18;
+    const max = Math.max(...best.map((b) => b.v)) * 1.08;
+    const bw = W / 24;
+    const top3 = [...best].sort((a, b) => b.v - a.v).slice(0, 3).map((b) => b.h);
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'Best expected profit per hour for each hour of the day');
+    const defs = document.createElementNS(ns, 'defs');
+    defs.innerHTML = '<linearGradient id="g" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="var(--bar-b)"/><stop offset="1" stop-color="var(--bar-a)"/></linearGradient>';
+    svg.appendChild(defs);
+    const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true;
+    best.forEach((b) => {
+      const h = (H - padB - padT) * b.v / max, x = b.h * bw + 1.5, y = H - padB - h;
+      const r = document.createElementNS(ns, 'rect');
+      r.setAttribute('x', x); r.setAttribute('y', y); r.setAttribute('width', bw - 3); r.setAttribute('height', h); r.setAttribute('rx', 3);
+      r.setAttribute('fill', top3.includes(b.h) ? 'url(#g)' : 'var(--track)');
+      svg.appendChild(r);
+      if (top3.includes(b.h)) {
+        const t = document.createElementNS(ns, 'text'); t.setAttribute('x', x + (bw - 3) / 2); t.setAttribute('y', y - 4);
+        t.setAttribute('text-anchor', 'middle'); t.textContent = `$${Math.round(b.v)}`; svg.appendChild(t);
+      }
+      const hit = document.createElementNS(ns, 'rect');
+      hit.setAttribute('x', b.h * bw); hit.setAttribute('y', 0); hit.setAttribute('width', bw); hit.setAttribute('height', H); hit.setAttribute('fill', 'transparent');
+      hit.addEventListener('mousemove', (ev) => {
+        tip.innerHTML = ''; const bb = document.createElement('b'); bb.textContent = `${hourName(b.h)} · ${money(b.v)}/hr`;
+        tip.append(bb, document.createTextNode(b.zone)); tip.hidden = false;
+        const box = el.getBoundingClientRect(); let lx = ev.clientX - box.left + 10;
+        if (lx + tip.offsetWidth > box.width) lx = ev.clientX - box.left - tip.offsetWidth - 10;
+        tip.style.left = `${lx}px`; tip.style.top = '0px';
+      });
+      hit.addEventListener('mouseleave', () => { tip.hidden = true; });
+      svg.appendChild(hit);
+    });
+    [0, 6, 12, 18].forEach((h) => {
+      const t = document.createElementNS(ns, 'text'); t.setAttribute('x', h * bw + bw / 2); t.setAttribute('y', H - 5);
+      t.setAttribute('text-anchor', h === 0 ? 'start' : 'middle'); if (h === 0) t.setAttribute('x', 1);
+      t.textContent = hourName(h); svg.appendChild(t);
+    });
+    el.append(svg, tip);
+    $('hours-sub').textContent = `top 3: ${top3.sort((a, b) => a - b).map(hourName).join(', ')}`;
+  }
+
+  render();
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => drawHours(state.scenario), 150); });
+})();
+</script>
